@@ -1,0 +1,41 @@
+name: Feature Request
+description: Propose a new feature or improvement for DeltaCare
+title: "[FEAT]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please verify that this proposal adheres to the strict $0 perpetual budget constraint.
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Target Phase
+      options:
+        - "Phase 1 (Stateless B2C Consumer Tool)"
+        - "Phase 2 (B2B Broker Portal Extension)"
+        - "Phase 3 (Actuarial Multi-Model Hub)"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Being Solved
+      description: What user friction or business inefficiency does this address?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Feature Specification
+      description: Clear explanation of how the feature should behave.
+    validations:
+      required: true
+  - type: textarea
+    id: budget_audit
+    attributes:
+      label: $0 Budget Compliance Verification
+      description: Explain how this feature runs permanently with zero cloud or API costs.
+    validations:
+      required: true
+

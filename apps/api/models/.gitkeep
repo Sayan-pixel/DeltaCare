@@ -1,0 +1,3 @@
+# apps/api/models/.gitkeep
+# Serialized ML pipeline artifacts (*.joblib) are tracked via Git LFS
+

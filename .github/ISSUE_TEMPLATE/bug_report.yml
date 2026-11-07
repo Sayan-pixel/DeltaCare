@@ -1,0 +1,66 @@
+name: Bug Report
+description: File a reproducible defect report for DeltaCare
+title: "[BUG]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug report. Please ensure this defect has an automated test case reproducing the issue.
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity Level
+      options:
+        - "P1 - Blocker (Halts deployment, security leak, ML benchmark fail)"
+        - "P2 - Critical (Calculation error, rate limit failure, CORS bypass)"
+        - "P3 - Major (Debounce slider glitch, UI layout overflow)"
+        - "P4 - Minor (Cosmetic defect, documentation typo)"
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      options:
+        - "apps/api (FastAPI / ML Model)"
+        - "apps/web (Next.js / React UI)"
+        - "scripts (Ingestion / Training)"
+        - "docs (Documentation / Specs)"
+        - ".github (CI/CD Workflows)"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description of Defect
+      description: Detailed explanation of the unexpected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Exact steps to trigger the bug.
+      placeholder: |
+        1. Navigate to ...
+        2. Enter Age: 30, BMI: 25.0, Smoker: 'yes'
+        3. Click 'Get Instant Quote'
+    validations:
+      required: true
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: Actual Behavior & Error Logs
+      description: Paste exact terminal output, HTTP status code, or JSON error.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen according to docs/REQUIREMENTS.md?
+    validations:
+      required: true
+

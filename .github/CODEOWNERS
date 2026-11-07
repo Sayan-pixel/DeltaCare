@@ -1,0 +1,27 @@
+# CODEOWNERS for DeltaCare
+# Lines starting with '#' are comments.
+# This file defines individuals or teams responsible for code review.
+
+# Global default owners for all files
+* @sayantan
+
+# AI Agent Governance rules are strictly guarded
+/.ai/ @sayantan
+/AGENTS.md @sayantan
+/.agent/ @sayantan
+
+# Master Architecture & Security documentation
+/docs/architecture/ @sayantan
+/docs/security/ @sayantan
+/docs/decisions/ @sayantan
+
+# CI/CD Workflows
+/.github/workflows/ @sayantan
+
+# Backend API and ML Pipeline
+/apps/api/ @sayantan
+/scripts/ @sayantan
+
+# Frontend Client
+/apps/web/ @sayantan
+
