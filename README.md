@@ -2,9 +2,19 @@
 
 **A transparent, data-driven health insurance premium prediction SaaS micro-product.**
 
+[![Live Web Application](https://img.shields.io/badge/Live_App-delta--care--sigma.vercel.app-10b981?style=for-the-badge&logo=vercel&logoColor=white)](https://delta-care-sigma.vercel.app/)
+[![API Status](https://img.shields.io/badge/API_Status-Online-3b82f6?style=for-the-badge&logo=fastapi&logoColor=white)](https://deltacare-api.onrender.com/health)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Architecture: Decoupled](https://img.shields.io/badge/Architecture-Decoupled_Micro--SaaS-green.svg)](docs/architecture/SYSTEM_TOPOLOGY.md)
 [![Budget: $0.00](https://img.shields.io/badge/Hosting_Cost-%240.00_Perpetual-brightgreen.svg)](docs/CONSTRAINTS.md)
+
+---
+
+## 🌐 Live Production Links
+
+* **Live Web App**: [https://delta-care-sigma.vercel.app/](https://delta-care-sigma.vercel.app/)
+* **Production API Health**: [https://deltacare-api.onrender.com/health](https://deltacare-api.onrender.com/health)
+* **API Documentation**: [https://deltacare-api.onrender.com/docs](https://deltacare-api.onrender.com/docs)
 
 ---
 
@@ -21,7 +31,7 @@ Unlike traditional black-box calculators, DeltaCare provides **actionable transp
 ```mermaid
 flowchart LR
     A[Anonymous Consumer] -->|Demographic & Health Inputs| B[Vercel Edge Next.js UI]
-    B -->|Stateless JSON POST| C[Hugging Face Space Docker Container]
+    B -->|Stateless JSON POST| C[Render Cloud Web Service]
     C -->|FastAPI + slowapi| D[Unified ML Pipeline XGBoost + Preprocessing]
     D -->|Predicted Premium + Confidence Margin| C
     C -->|JSON Payload| B
@@ -52,8 +62,8 @@ E:\DeltaCare/
 
 | Tier | Component | Technology | Hosting / Environment | Free-Tier Guarantee |
 | :--- | :--- | :--- | :--- | :--- |
-| **Brain** | ML Pipeline | Python, Scikit-learn, XGBoost, SHAP | Local / CI Automation | Fully scripted; zero external API costs |
-| **Engine** | REST API | FastAPI, Pydantic, slowapi, Docker | **Hugging Face Spaces** | 16GB RAM / 2 vCPUs free CPU tier (prevents 512MB OOM crashes) |
+| **Brain** | ML Pipeline | Python, Scikit-learn, XGBoost | Local / CI Automation | Fully scripted; zero external API costs |
+| **Engine** | REST API | FastAPI, Pydantic, slowapi, Uvicorn | **Render.com** | 100% Free Web Service tier (zero credit card) |
 | **Face** | Web Client | Next.js / React, Tailwind CSS, TypeScript | **Vercel** | Perpetual free tier, global edge CDN, automatic SSL, zero sleep |
 | **State** | Persistence | Stateless (Phase 1) | In-Memory Token Bucket | No database hosting fees or PII storage risk |
 
