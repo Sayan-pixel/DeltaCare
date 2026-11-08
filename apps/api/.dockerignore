@@ -1,0 +1,40 @@
+# Git & Version Control
+.git/
+.gitignore
+.gitattributes
+
+# Environment & Local Secrets
+.env
+.env.*
+!.env.example
+
+# Python Caches & Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environments
+env/
+venv/
+.venv/
+
+# Raw Datasets & Temporary Caches
+data/*.csv
+data/*.zip
+!.gitkeep
+
+# Testing & Quality
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# Editor & OS Metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+

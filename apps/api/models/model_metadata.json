@@ -1,0 +1,35 @@
+{
+  "model_name": "DeltaCare XGBoost Regressor",
+  "version": "1.0.0",
+  "trained_at": "2026-11-08T16:13:32.671521+00:00",
+  "random_state": 42,
+  "dataset_rows": 1338,
+  "train_rows": 1070,
+  "test_rows": 268,
+  "features": [
+    "age",
+    "sex",
+    "bmi",
+    "children",
+    "smoker",
+    "region"
+  ],
+  "numerical_features": [
+    "age",
+    "bmi",
+    "children"
+  ],
+  "categorical_features": [
+    "sex",
+    "smoker",
+    "region"
+  ],
+  "metrics": {
+    "r2_score": 0.8695,
+    "mae": 1645.52,
+    "rmse": 4500.53
+  },
+  "confidence_margin_annual": 1645.52,
+  "confidence_margin_monthly": 137.13,
+  "clamping_floor_annual": 1000.0
+}

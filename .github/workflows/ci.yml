@@ -1,0 +1,78 @@
+name: DeltaCare Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-ci:
+    name: Backend ML Pipeline & API Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: apps/api/requirements.txt
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r apps/api/requirements.txt
+
+      - name: Automated Data Ingestion (FR-001)
+        run: python scripts/ingest_data.py
+
+      - name: Train ML Pipeline & Serialize Artifact (FR-002, FR-003, ADR-003, ADR-006)
+        run: python scripts/train_model.py
+
+      - name: Enforce Holdout Model Quality Benchmark Gate (R² >= 0.85, MAE <= $2,000)
+        run: python scripts/audit_model.py
+
+      - name: Execute FastAPI Backend Test Suite (FR-004, FR-005, FR-006, ADR-005)
+        run: python -m pytest apps/api/tests -v
+
+  frontend-ci:
+    name: Frontend Client Validation & Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: apps/web/package.json
+
+      - name: Install frontend dependencies
+        working-directory: apps/web
+        run: npm install
+
+      - name: Verify TypeScript Type Safety
+        working-directory: apps/web
+        run: npx tsc --noEmit
+
+      - name: Compile Production Edge Bundle
+        working-directory: apps/web
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: "https://mock-deltacare-api.hf.space"
+          NEXT_PUBLIC_API_TIMEOUT_MS: "20000"
+          NEXT_PUBLIC_SLIDER_DEBOUNCE_MS: "400"
+
