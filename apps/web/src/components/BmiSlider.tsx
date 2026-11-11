@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import { BMI_MAX, BMI_MIN, BmiTone, clampBmi, getBmiCategory, roundBmi } from "../lib/bmi";
+import { cn } from "../lib/cn";
 
 interface BmiSliderProps {
   value: number;
@@ -8,80 +10,49 @@ interface BmiSliderProps {
   disabled?: boolean;
 }
 
-interface BmiCategory {
-  label: string;
-  badgeClass: string;
-}
+const TONE_CLASSES: Record<BmiTone, string> = {
+  sky: "bg-sky-100 text-sky-900 dark:bg-sky-950 dark:text-sky-200",
+  emerald: "bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200",
+  amber: "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200",
+  rose: "bg-rose-100 text-rose-900 dark:bg-rose-950 dark:text-rose-200",
+};
 
-const BMI_MIN = 10.0;
-const BMI_MAX = 60.0;
-
-function getBmiCategory(bmi: number): BmiCategory {
-  if (bmi < 18.5) {
-    return {
-      label: "Underweight",
-      badgeClass: "bg-sky-100 text-sky-800 ring-sky-200 dark:bg-sky-950/60 dark:text-sky-300 dark:ring-sky-800",
-    };
-  }
-  if (bmi < 25.0) {
-    return {
-      label: "Normal weight",
-      badgeClass: "bg-emerald-100 text-emerald-800 ring-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:ring-emerald-800",
-    };
-  }
-  if (bmi < 30.0) {
-    return {
-      label: "Overweight",
-      badgeClass: "bg-amber-100 text-amber-800 ring-amber-200 dark:bg-amber-950/60 dark:text-amber-300 dark:ring-amber-800",
-    };
-  }
-  return {
-    label: "Obese (higher risk)",
-    badgeClass: "bg-rose-100 text-rose-800 ring-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:ring-rose-800",
-  };
-}
-
-const clampBmi = (n: number) => Math.min(BMI_MAX, Math.max(BMI_MIN, n));
+const TICKS = [10, 18.5, 25, 30, 60];
+const positionOf = (v: number) => ((v - BMI_MIN) / (BMI_MAX - BMI_MIN)) * 100;
 
 export const BmiSlider: React.FC<BmiSliderProps> = ({ value, onChange, disabled = false }) => {
   const category = getBmiCategory(value);
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
-    if (!isNaN(val)) {
-      onChange(clampBmi(Math.round(val * 10) / 10));
-    }
+    if (!Number.isNaN(val)) onChange(clampBmi(roundBmi(val)));
   };
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
-    if (!isNaN(val)) {
-      onChange(clampBmi(val));
-    }
+    if (!Number.isNaN(val)) onChange(clampBmi(roundBmi(val)));
   };
 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <label htmlFor="bmi-slider" className="text-sm font-semibold text-slate-800 dark:text-slate-200">
-          Body Mass Index (BMI)
+        <label htmlFor="bmi-slider" className="text-sm font-semibold text-ink">
+          Body mass index (BMI)
         </label>
         <div className="flex items-center gap-2.5">
-          <span
-            className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${category.badgeClass}`}
-          >
+          <span className={cn("rounded-full px-2.5 py-1 text-xs font-semibold", TONE_CLASSES[category.tone])}>
             {category.label}
           </span>
           <input
             id="bmi-number"
             type="number"
-            min="10.0"
-            max="60.0"
+            min={BMI_MIN}
+            max={BMI_MAX}
             step="0.1"
             value={value.toFixed(1)}
             onChange={handleNumberChange}
             disabled={disabled}
-            className="field w-24 px-2.5 py-1.5 text-right font-mono text-sm"
+            className="field w-[5.5rem] px-2.5 py-1.5 text-right font-mono text-sm tabular-nums"
             aria-label="Numeric Body Mass Index"
           />
         </div>
@@ -90,22 +61,27 @@ export const BmiSlider: React.FC<BmiSliderProps> = ({ value, onChange, disabled 
       <input
         id="bmi-slider"
         type="range"
-        min="10.0"
-        max="60.0"
+        min={BMI_MIN}
+        max={BMI_MAX}
         step="0.1"
         value={value}
         onChange={handleSliderChange}
         disabled={disabled}
         className="bmi-range"
         aria-label="BMI Range Slider"
+        aria-valuetext={`${value.toFixed(1)}, ${category.label}`}
       />
 
-      <div className="flex justify-between px-0.5 text-[11px] font-medium text-slate-400 dark:text-slate-500">
-        <span>10</span>
-        <span>18.5</span>
-        <span>25</span>
-        <span>30</span>
-        <span>60</span>
+      <div className="relative h-4 text-[11px] font-medium text-ink-faint" aria-hidden="true">
+        {TICKS.map((tick) => (
+          <span
+            key={tick}
+            className="absolute -translate-x-1/2 tabular-nums"
+            style={{ left: `${positionOf(tick)}%`, ...(tick === BMI_MIN ? { transform: "none" } : {}), ...(tick === BMI_MAX ? { transform: "translateX(-100%)" } : {}) }}
+          >
+            {tick}
+          </span>
+        ))}
       </div>
     </div>
   );
