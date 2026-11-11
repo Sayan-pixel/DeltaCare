@@ -68,6 +68,14 @@ jobs:
         working-directory: apps/web
         run: npx tsc --noEmit
 
+      - name: Lint Frontend Code
+        working-directory: apps/web
+        run: npm run lint
+
+      - name: Execute Frontend Unit Tests
+        working-directory: apps/web
+        run: npm test
+
       - name: Compile Production Edge Bundle
         working-directory: apps/web
         run: npm run build

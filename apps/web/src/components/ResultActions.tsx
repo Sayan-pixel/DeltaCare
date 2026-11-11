@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BookmarkCheck, BookmarkPlus, Check, Link2, Printer } from "lucide-react";
 import { cn } from "../lib/cn";
+import { formatUSD } from "../lib/format";
 import { profileToParams } from "../lib/profile";
 import { QuoteRequest, QuoteResponse } from "../types/quote";
 
@@ -17,19 +18,48 @@ interface ResultActionsProps {
 
 export const ResultActions: React.FC<ResultActionsProps> = ({
   profile,
+  quote,
   isPinned,
   canPin,
   pinLabel,
   onPin,
 }) => {
   const [copied, setCopied] = useState(false);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current);
+      }
+    };
+  }, []);
 
   const handleCopyLink = async () => {
     const url = `${window.location.origin}${window.location.pathname}?${profileToParams(profile).toString()}`;
+    if (typeof navigator !== "undefined" && typeof navigator.share === "function") {
+      try {
+        await navigator.share({
+          title: "DeltaCare Health Insurance Estimate",
+          text: `Estimated health insurance premium: ${formatUSD(quote.predicted_monthly)} / month`,
+          url,
+        });
+        return;
+      } catch (err: unknown) {
+        if (err instanceof DOMException && err.name === "AbortError") {
+          return;
+        }
+        // Fall through to clipboard copy if share is dismissed/unsupported in context
+      }
+    }
+
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (copyTimerRef.current) {
+        clearTimeout(copyTimerRef.current);
+      }
+      copyTimerRef.current = setTimeout(() => setCopied(false), 2000);
     } catch {
       // Fallback: address bar is already synced via history.replaceState
     }

@@ -1,7 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import { Minus, Plus } from "lucide-react";
+import { useNumericDraft } from "../hooks/useNumericDraft";
 
 interface NumberStepperProps {
   id: string;
@@ -26,14 +27,19 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
   hint,
   disabled = false,
 }) => {
-  const clamp = (n: number) => Math.min(max, Math.max(min, Math.round(n)));
+  const formatInt = useCallback((n: number) => String(n), []);
+  const clamp = useCallback((n: number) => Math.min(max, Math.max(min, Math.round(n))), [min, max]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const parsed = Number.parseInt(e.target.value, 10);
-    if (!Number.isNaN(parsed)) {
-      onChange(clamp(parsed));
-    }
-  };
+  const { syncImmediate, inputProps } = useNumericDraft({
+    value,
+    min,
+    max,
+    step,
+    allowDecimal: false,
+    format: formatInt,
+    normalize: clamp,
+    onCommit: onChange,
+  });
 
   return (
     <div className="space-y-2">
@@ -47,7 +53,7 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
       <div className="flex items-center gap-2">
         <button
           type="button"
-          onClick={() => onChange(clamp(value - step))}
+          onClick={() => syncImmediate(value - step)}
           disabled={disabled || value <= min}
           className="step-btn"
           aria-label={`Decrease ${label}`}
@@ -57,19 +63,15 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
 
         <input
           id={id}
-          type="number"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          onChange={handleInputChange}
+          type="text"
+          {...inputProps}
           disabled={disabled}
           className="field text-center font-mono tabular-nums"
         />
 
         <button
           type="button"
-          onClick={() => onChange(clamp(value + step))}
+          onClick={() => syncImmediate(value + step)}
           disabled={disabled || value >= max}
           className="step-btn"
           aria-label={`Increase ${label}`}
@@ -80,4 +82,3 @@ export const NumberStepper: React.FC<NumberStepperProps> = ({
     </div>
   );
 };
-

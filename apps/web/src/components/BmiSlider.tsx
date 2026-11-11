@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
+import { useNumericDraft } from "../hooks/useNumericDraft";
 import { BMI_MAX, BMI_MIN, BmiTone, clampBmi, getBmiCategory, roundBmi } from "../lib/bmi";
 import { cn } from "../lib/cn";
 
@@ -23,14 +24,23 @@ const positionOf = (v: number) => ((v - BMI_MIN) / (BMI_MAX - BMI_MIN)) * 100;
 export const BmiSlider: React.FC<BmiSliderProps> = ({ value, onChange, disabled = false }) => {
   const category = getBmiCategory(value);
 
+  const formatBmi = useCallback((n: number) => n.toFixed(1), []);
+  const normalizeBmi = useCallback((n: number) => clampBmi(roundBmi(n)), []);
+
+  const { syncImmediate, inputProps } = useNumericDraft({
+    value,
+    min: BMI_MIN,
+    max: BMI_MAX,
+    step: 0.1,
+    allowDecimal: true,
+    format: formatBmi,
+    normalize: normalizeBmi,
+    onCommit: onChange,
+  });
+
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
-    if (!Number.isNaN(val)) onChange(clampBmi(roundBmi(val)));
-  };
-
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = parseFloat(e.target.value);
-    if (!Number.isNaN(val)) onChange(clampBmi(roundBmi(val)));
+    if (!Number.isNaN(val)) syncImmediate(val);
   };
 
   return (
@@ -45,12 +55,8 @@ export const BmiSlider: React.FC<BmiSliderProps> = ({ value, onChange, disabled 
           </span>
           <input
             id="bmi-number"
-            type="number"
-            min={BMI_MIN}
-            max={BMI_MAX}
-            step="0.1"
-            value={value.toFixed(1)}
-            onChange={handleNumberChange}
+            type="text"
+            {...inputProps}
             disabled={disabled}
             className="field w-[5.5rem] px-2.5 py-1.5 text-right font-mono text-sm tabular-nums"
             aria-label="Numeric Body Mass Index"

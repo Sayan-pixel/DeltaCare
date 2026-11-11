@@ -4,18 +4,17 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * Smoothly interpolates numeric transitions when `target` updates.
- * Initializes directly to `target` on first mount so initial renders and tests display exact values immediately.
+ * Initializes directly to `target` on first mount and tracks current rendered frame
+ * values so rapid target changes never snap backward.
  */
 export function useCountUp(target: number, durationMs = 360): number {
   const [display, setDisplay] = useState<number>(target);
-  const previousRef = useRef<number>(target);
+  const displayRef = useRef<number>(target);
 
   useEffect(() => {
-    const startVal = previousRef.current;
-    previousRef.current = target;
+    const startVal = displayRef.current;
 
     if (startVal === target) {
-      setDisplay(target);
       return;
     }
 
@@ -25,6 +24,7 @@ export function useCountUp(target: number, durationMs = 360): number {
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     if (prefersReducedMotion || typeof requestAnimationFrame !== "function") {
+      displayRef.current = target;
       setDisplay(target);
       return;
     }
@@ -35,13 +35,15 @@ export function useCountUp(target: number, durationMs = 360): number {
     const tick = (now: number) => {
       const elapsed = now - startTime;
       const t = Math.min(1, elapsed / durationMs);
-      // Cubic ease-out
       const eased = 1 - Math.pow(1 - t, 3);
-      setDisplay(startVal + (target - startVal) * eased);
+      const current = startVal + (target - startVal) * eased;
+      displayRef.current = current;
+      setDisplay(current);
 
       if (t < 1) {
         rafId = requestAnimationFrame(tick);
       } else {
+        displayRef.current = target;
         setDisplay(target);
       }
     };
@@ -52,4 +54,3 @@ export function useCountUp(target: number, durationMs = 360): number {
 
   return display;
 }
-

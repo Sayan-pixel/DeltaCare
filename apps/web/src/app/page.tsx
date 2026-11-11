@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
 import { ColdStartLoader } from "../components/ColdStartLoader";
 import { CompareTray, PinnedEstimate } from "../components/CompareTray";
+import { CostCurveChart } from "../components/CostCurveChart";
 import { DemographicsForm } from "../components/DemographicsForm";
 import { Disclaimer } from "../components/Disclaimer";
 import { EmptyState } from "../components/EmptyState";
@@ -20,10 +21,11 @@ import { useDebounce } from "../hooks/useDebounce";
 import { useQuote } from "../hooks/useQuote";
 import { formatUSD } from "../lib/format";
 import { INITIAL_PROFILE, profileFromParams, profileKey, profileToParams } from "../lib/profile";
-import { QuoteRequest } from "../types/quote";
+import { QuoteRequest, QuoteResponse } from "../types/quote";
 
 const DESKTOP_BREAKPOINT_PX = 1024;
-const LIVE_DEBOUNCE_MS = 450;
+const parsedDebounce = Number.parseInt(process.env.NEXT_PUBLIC_SLIDER_DEBOUNCE_MS || "400", 10);
+const LIVE_DEBOUNCE_MS = Number.isFinite(parsedDebounce) && parsedDebounce >= 0 ? parsedDebounce : 400;
 const MAX_PINNED = 3;
 
 const TRUST_POINTS = ["No account needed", "Nothing you enter is stored", "Every estimate shows its error range"];
@@ -40,7 +42,10 @@ export default function HomePage() {
   const scrollToResultsOnNext = useRef(false);
   const pinCounter = useRef(0);
   const resultsRef = useRef<HTMLDivElement>(null);
+  const quoteCardRef = useRef<HTMLDivElement>(null);
   const debouncedProfile = useDebounce(profile, LIVE_DEBOUNCE_MS);
+  const quoteGeneratedAt = useMemo(() => (quote ? new Date() : null), [quote]);
+  const isLoading = status === "fast_loading" || status === "waking_server";
 
   const run = useCallback(
     (request: QuoteRequest, options?: { silent?: boolean }) => {
@@ -66,10 +71,14 @@ export default function HomePage() {
     run(debouncedProfile, { silent: true });
   }, [debouncedProfile, live, run]);
 
-  // Keep the address bar shareable: it always reflects the estimate on screen.
+  // Keep the address bar shareable while preserving any active section anchor.
   useEffect(() => {
     if (!quotedProfile) return;
-    window.history.replaceState(null, "", `${window.location.pathname}?${profileToParams(quotedProfile).toString()}`);
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}?${profileToParams(quotedProfile).toString()}${window.location.hash}`
+    );
   }, [quotedProfile]);
 
   // On phones, bring the first result into view after an explicit submit.
@@ -82,14 +91,19 @@ export default function HomePage() {
     }
   }, [quote]);
 
-  // Track whether the result is on screen, to show the floating price bar on phones.
+  // Track whether the quote card itself is on screen, to show the floating price bar on phones.
   useEffect(() => {
-    const el = resultsRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver(([entry]) => setResultsVisible(entry.isIntersecting), { threshold: 0.15 });
+    const el = quoteCardRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") {
+      setResultsVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(([entry]) => setResultsVisible(entry.isIntersecting), {
+      threshold: 0.1,
+    });
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [quote, isLoading]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,22 +112,28 @@ export default function HomePage() {
     run(profile);
   };
 
-  const handleTogglePin = () => {
-    if (!quote || !quotedProfile) return;
-    const key = profileKey(quotedProfile);
+  const togglePinnedScenario = (targetProfile: QuoteRequest, targetQuote: QuoteResponse) => {
+    const key = profileKey(targetProfile);
     setPinned((prev) => {
       if (prev.some((p) => profileKey(p.profile) === key)) {
         return prev.filter((p) => profileKey(p.profile) !== key);
       }
       if (prev.length >= MAX_PINNED) return prev;
       pinCounter.current += 1;
-      return [...prev, { id: pinCounter.current, profile: quotedProfile, quote }];
+      return [...prev, { id: pinCounter.current, profile: targetProfile, quote: targetQuote }];
     });
   };
 
-  const isLoading = status === "fast_loading" || status === "waking_server";
+  const handlePreviewScenario = (targetProfile: QuoteRequest) => {
+    setProfile(targetProfile);
+    hasCalculatedOnce.current = true;
+    run(targetProfile);
+    resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const pinnedKeys = pinned.map((p) => profileKey(p.profile));
   const dirty = quotedProfile !== null && profileKey(quotedProfile) !== profileKey(profile);
-  const alreadyPinned = quotedProfile !== null && pinned.some((p) => profileKey(p.profile) === profileKey(quotedProfile));
+  const alreadyPinned = quotedProfile !== null && pinnedKeys.includes(profileKey(quotedProfile));
   const pinLabel = alreadyPinned ? "Unpin" : pinned.length >= MAX_PINNED ? "Compare is full" : "Pin to compare";
 
   return (
@@ -179,14 +199,16 @@ export default function HomePage() {
 
             {quote && quotedProfile && !isLoading && (
               <div className="animate-fadeIn space-y-4">
-                <QuoteCard quote={quote} profile={quotedProfile} updating={isUpdating} stale={isStale} />
+                <div ref={quoteCardRef}>
+                  <QuoteCard quote={quote} profile={quotedProfile} updating={isUpdating} stale={isStale} />
+                </div>
                 <ResultActions
                   profile={quotedProfile}
                   quote={quote}
                   isPinned={alreadyPinned}
                   canPin={alreadyPinned || pinned.length < MAX_PINNED}
                   pinLabel={pinLabel}
-                  onPin={handleTogglePin}
+                  onPin={() => togglePinnedScenario(quotedProfile, quote)}
                 />
                 <Disclaimer />
               </div>
@@ -201,7 +223,15 @@ export default function HomePage() {
       {quote && quotedProfile && (
         <section className="space-y-5" aria-label="Explore your estimate">
           {whatIf && <WhatIfBadge whatIf={whatIf} />}
-          <SensitivityExplorer profile={quotedProfile} currentMonthly={quote.predicted_monthly} />
+          <SensitivityExplorer
+            profile={quotedProfile}
+            currentMonthly={quote.predicted_monthly}
+            pinnedKeys={pinnedKeys}
+            canPinMore={pinned.length < MAX_PINNED}
+            onPreview={handlePreviewScenario}
+            onPinScenario={togglePinnedScenario}
+          />
+          <CostCurveChart profile={quotedProfile} currentMonthly={quote.predicted_monthly} />
           <CompareTray
             pinned={pinned}
             onRemove={(id) => setPinned((prev) => prev.filter((p) => p.id !== id))}
@@ -231,7 +261,13 @@ export default function HomePage() {
       </div>
 
       {quote && quotedProfile && (
-        <PrintableReport quote={quote} profile={quotedProfile} whatIf={whatIf} pinned={pinned} />
+        <PrintableReport
+          quote={quote}
+          profile={quotedProfile}
+          whatIf={whatIf}
+          pinned={pinned}
+          generatedAt={quoteGeneratedAt}
+        />
       )}
     </>
   );

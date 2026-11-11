@@ -30,10 +30,16 @@ export function useQuote() {
     checkHealth().catch(() => {
       // Quiet background warm-up; ignored if inactive
     });
+
+    return () => {
+      activeAbortController.current?.abort();
+      if (wakeUpTimerRef.current) {
+        clearTimeout(wakeUpTimerRef.current);
+      }
+    };
   }, []);
 
   const getQuote = useCallback(async (request: QuoteRequest, options?: GetQuoteOptions) => {
-    // Cancel any in-flight request
     if (activeAbortController.current) {
       activeAbortController.current.abort();
     }
@@ -58,21 +64,32 @@ export function useQuote() {
       }, 2000);
     }
 
+    // Launch primary quote and optional counterfactual in parallel so smokers don't pay 2x sequential latency
+    const primaryPromise = calculateQuote(request, controller.signal);
+    const nonSmokerPromise =
+      request.smoker === "yes"
+        ? calculateQuote({ ...request, smoker: "no" }, controller.signal).catch(() => null)
+        : Promise.resolve(null);
+
     try {
-      // 1. Fetch primary quote
-      const primaryQuote = await calculateQuote(request, controller.signal);
+      const primaryQuote = await primaryPromise;
       if (controller.signal.aborted) return;
 
+      if (wakeUpTimerRef.current) {
+        clearTimeout(wakeUpTimerRef.current);
+        wakeUpTimerRef.current = null;
+      }
+
+      // Reveal primary estimate immediately without waiting on counterfactual completion
       setQuote(primaryQuote);
       setQuotedProfile(request);
+      setStatus("success");
 
-      // 2. FR-010: Dynamic What-If smoking delta calculation
       if (request.smoker === "yes") {
-        try {
-          const nonSmokerRequest: QuoteRequest = { ...request, smoker: "no" };
-          const nonSmokerQuote = await calculateQuote(nonSmokerRequest, controller.signal);
-          if (controller.signal.aborted) return;
+        const nonSmokerQuote = await nonSmokerPromise;
+        if (controller.signal.aborted) return;
 
+        if (nonSmokerQuote) {
           const annualSavings = Math.max(0, primaryQuote.predicted_annual - nonSmokerQuote.predicted_annual);
           const monthlySavings = Math.max(0, primaryQuote.predicted_monthly - nonSmokerQuote.predicted_monthly);
 
@@ -84,16 +101,12 @@ export function useQuote() {
             monthlySavings: Math.round(monthlySavings * 100) / 100,
             annualSavings: Math.round(annualSavings * 100) / 100,
           });
-        } catch {
-          if (controller.signal.aborted) return;
-          // If secondary what-if fetch fails, non-blocking: retain primary quote
+        } else {
           setWhatIf(null);
         }
       } else {
         setWhatIf(null);
       }
-
-      setStatus("success");
     } catch (err: unknown) {
       // Request superseded by a newer request; exit silently
       if (controller.signal.aborted) return;

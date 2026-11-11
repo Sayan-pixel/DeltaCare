@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { LIMITS, Preset, REGION_LABELS } from "../lib/profile";
+import { INITIAL_PROFILE, LIMITS, Preset, profileKey, REGION_LABELS } from "../lib/profile";
 import { QuoteRequest, Region, Sex, Smoker } from "../types/quote";
 import { BmiCalculator } from "./BmiCalculator";
 import { BmiSlider } from "./BmiSlider";
@@ -57,15 +57,42 @@ export const DemographicsForm: React.FC<DemographicsFormProps> = ({
   hasQuote = false,
   dirty = false,
 }) => {
+  const [undoProfile, setUndoProfile] = useState<QuoteRequest | null>(null);
+
   const update = <K extends keyof QuoteRequest>(field: K, val: QuoteRequest[K]) => {
+    setUndoProfile(null);
     onChange({ ...values, [field]: val });
   };
 
-  const applyPreset = (preset: Preset) => onChange({ ...preset.profile });
+  const applyPreset = (preset: Preset) => {
+    if (profileKey(values) !== profileKey(preset.profile)) {
+      setUndoProfile(values);
+    }
+    onChange({ ...preset.profile });
+  };
+
+  const handleUndoPreset = () => {
+    if (!undoProfile) return;
+    const prev = undoProfile;
+    setUndoProfile(null);
+    onChange({ ...prev });
+  };
+
+  const handleReset = () => {
+    setUndoProfile(null);
+    onChange({ ...INITIAL_PROFILE });
+  };
 
   return (
     <form onSubmit={onSubmit} className="space-y-6" noValidate aria-label="Your profile">
-      <PresetBar current={values} onSelect={applyPreset} />
+      <PresetBar
+        current={values}
+        onSelect={applyPreset}
+        canUndo={undoProfile !== null}
+        onUndo={handleUndoPreset}
+        onReset={handleReset}
+        disabled={isLoading}
+      />
 
       <Group title="About you">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -77,6 +104,7 @@ export const DemographicsForm: React.FC<DemographicsFormProps> = ({
             max={LIMITS.age.max}
             onChange={(age) => update("age", age)}
             hint={`${LIMITS.age.min}–${LIMITS.age.max} years`}
+            disabled={isLoading}
           />
           <ChoiceGroup
             legend="Biological sex"
@@ -84,13 +112,14 @@ export const DemographicsForm: React.FC<DemographicsFormProps> = ({
             value={values.sex}
             options={SEX_OPTIONS}
             onChange={(sex) => update("sex", sex)}
+            disabled={isLoading}
           />
         </div>
       </Group>
 
       <Group title="Body">
-        <BmiSlider value={values.bmi} onChange={(bmi) => update("bmi", bmi)} />
-        <BmiCalculator onApply={(bmi) => update("bmi", bmi)} />
+        <BmiSlider value={values.bmi} onChange={(bmi) => update("bmi", bmi)} disabled={isLoading} />
+        <BmiCalculator onApply={(bmi) => update("bmi", bmi)} disabled={isLoading} />
       </Group>
 
       <Group title="Lifestyle &amp; household">
@@ -102,6 +131,7 @@ export const DemographicsForm: React.FC<DemographicsFormProps> = ({
             value={values.smoker}
             options={SMOKER_OPTIONS}
             onChange={(smoker) => update("smoker", smoker)}
+            disabled={isLoading}
           />
           <NumberStepper
             id="children"
@@ -111,6 +141,7 @@ export const DemographicsForm: React.FC<DemographicsFormProps> = ({
             max={LIMITS.children.max}
             onChange={(children) => update("children", children)}
             hint={`Up to ${LIMITS.children.max}`}
+            disabled={isLoading}
           />
         </div>
         <ChoiceGroup
@@ -120,6 +151,7 @@ export const DemographicsForm: React.FC<DemographicsFormProps> = ({
           options={REGION_OPTIONS}
           columns={4}
           onChange={(region) => update("region", region)}
+          disabled={isLoading}
         />
       </Group>
 
@@ -131,6 +163,7 @@ export const DemographicsForm: React.FC<DemographicsFormProps> = ({
             onChange={onLiveChange}
             label="Update as I change things"
             description="Re-price automatically a moment after each edit."
+            disabled={isLoading}
           />
         )}
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { ChevronDown } from "lucide-react";
+import { BENCHMARK_LABELS } from "../lib/benchmarks";
 
 const ITEMS = [
   {
@@ -8,7 +9,7 @@ const ITEMS = [
   },
   {
     q: "Why does the estimate include a ±MAE confidence range?",
-    a: "No machine learning model predicts individual medical costs with zero error. Surfacing the empirical Mean Absolute Error (±$1,646/yr, or ±$137/mo) from our holdout test set shows the realistic band rather than a false point guarantee.",
+    a: `No machine learning model predicts individual medical costs with zero error. Surfacing the empirical Mean Absolute Error (${BENCHMARK_LABELS.maeAnnual}/yr, or ${BENCHMARK_LABELS.maeMonthly}/mo) from our holdout test set shows the realistic band rather than a false point guarantee.`,
   },
   {
     q: "Why does tobacco use raise the predicted premium so sharply?",

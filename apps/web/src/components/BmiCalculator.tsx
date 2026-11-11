@@ -6,9 +6,10 @@ import { clampBmi, roundBmi } from "../lib/bmi";
 
 interface BmiCalculatorProps {
   onApply: (bmi: number) => void;
+  disabled?: boolean;
 }
 
-export const BmiCalculator: React.FC<BmiCalculatorProps> = ({ onApply }) => {
+export const BmiCalculator: React.FC<BmiCalculatorProps> = ({ onApply, disabled = false }) => {
   const [unit, setUnit] = useState<"imperial" | "metric">("imperial");
   const [feet, setFeet] = useState("5");
   const [inches, setInches] = useState("9");
@@ -161,7 +162,7 @@ export const BmiCalculator: React.FC<BmiCalculatorProps> = ({ onApply }) => {
         <button
           type="button"
           onClick={handleApply}
-          disabled={computed === null}
+          disabled={disabled || computed === null}
           className="btn-quiet w-full"
         >
           Apply BMI{computed !== null ? ` (${clampBmi(computed).toFixed(1)})` : ""}

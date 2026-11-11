@@ -1,15 +1,16 @@
 import React from "react";
+import { BENCHMARK_LABELS, MODEL_BENCHMARKS } from "../lib/benchmarks";
 
 const FACTS = [
   {
     label: "Holdout R² Score",
-    value: "0.87",
-    detail: "Explains ~87% of variance on unseen out-of-sample test records.",
+    value: MODEL_BENCHMARKS.r2Display,
+    detail: `Explains ~${Math.round(MODEL_BENCHMARKS.r2Score * 100)}% of variance on unseen out-of-sample test records.`,
   },
   {
     label: "Validation MAE",
-    value: "±$1,646",
-    detail: "Empirical annual Mean Absolute Error (±$137/mo) surfaced directly in every quote.",
+    value: BENCHMARK_LABELS.maeAnnual,
+    detail: `Empirical annual Mean Absolute Error (${BENCHMARK_LABELS.maeMonthly}/mo) surfaced directly in every quote.`,
   },
   {
     label: "Model Architecture",
@@ -18,7 +19,7 @@ const FACTS = [
   },
   {
     label: "Actuarial Minimum",
-    value: "$1,000 / yr",
+    value: BENCHMARK_LABELS.floorAnnual,
     detail: "Strict lower-bound guardrail clamping annualized estimates to realistic floor values.",
   },
 ];
@@ -32,7 +33,8 @@ export const ModelFacts: React.FC = () => {
           Grounded in audited error margins
         </h2>
         <p className="mt-3 text-base leading-relaxed text-ink-soft">
-          Every DeltaCare release is gated on automated statistical validation against holdout underwriting records (1,338 records; 80/20 split).
+          Every DeltaCare release is gated on automated statistical validation against holdout
+          underwriting records ({BENCHMARK_LABELS.datasetRows} records; 80/20 split).
         </p>
       </div>
 
@@ -50,4 +52,3 @@ export const ModelFacts: React.FC = () => {
     </section>
   );
 };
-
