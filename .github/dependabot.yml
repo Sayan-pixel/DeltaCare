@@ -36,6 +36,10 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+    groups:
+      github-actions-dependencies:
+        patterns:
+          - "*"
     labels:
       - "ci"
       - "dependencies"
