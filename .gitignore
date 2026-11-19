@@ -35,6 +35,7 @@ wheels/
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+*.tsbuildinfo
 
 # Node & Next.js
 node_modules/
