@@ -7,10 +7,10 @@ import { formatUSD } from "./format";
 export const MODEL_BENCHMARKS = {
   modelName: "DeltaCare Decision Tree Regressor (CART)",
   version: "1.0.0",
-  r2Score: 0.8718,
+  r2Score: 0.8692,
   r2Display: "0.87",
-  maeAnnual: 1741.43,
-  maeMonthly: 145.12,
+  maeAnnual: 1749.6,
+  maeMonthly: 145.8,
   datasetRows: 1338,
   trainRows: 1070,
   testRows: 268,

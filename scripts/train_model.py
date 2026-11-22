@@ -36,7 +36,7 @@ def build_pipeline() -> Pipeline:
     regressor = DecisionTreeRegressor(
         criterion="absolute_error",
         max_depth=6,
-        min_samples_leaf=5,
+        min_samples_leaf=10,
         random_state=42,
     )
 

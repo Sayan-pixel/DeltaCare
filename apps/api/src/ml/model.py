@@ -45,8 +45,8 @@ class ModelService:
         else:
             logger.warning(f"Model metadata file missing at: {meta_path}; using fallback defaults.")
             self.metadata = {
-                "confidence_margin_annual": 1741.43,
-                "confidence_margin_monthly": 145.12,
+                "confidence_margin_annual": 1749.60,
+                "confidence_margin_monthly": 145.80,
             }
 
         self.is_loaded = True

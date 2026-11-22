@@ -64,7 +64,7 @@ def audit_model_artifact(repo_root: Path):
     print(f"[AUDIT] Holdout MAE:       ${mae:,.2f} (Required: <= ${MAX_MAE_THRESHOLD:,.2f})")
     print(f"[AUDIT] Holdout RMSE:      ${rmse:,.2f}")
 
-    # 4. Verify Non-Linear Interaction Effect (FR-002)
+    # 4. Verify Non-Linear Interaction Effect & Strict Monotonicity (FR-002, ADR-011)
     # Compare smoker vs non-smoker price surge across high BMI (> 30)
     high_bmi_profile = pd.DataFrame([
         {"age": 45, "sex": "male", "bmi": 35.0, "children": 0, "smoker": "no", "region": "northeast"},
@@ -76,6 +76,40 @@ def audit_model_artifact(repo_root: Path):
 
     if smoker_surge < 10000.0:
         print("[FAIL] Non-linear smoker x BMI interaction failed: expected >= $10,000 surge")
+        sys.exit(1)
+
+    # 4b. Strict Monotonicity Audit: Verify smoking status never reverses pricing across demographics
+    # Includes profile flagged in PR #23 review (20yo male, BMI 24, 2 children, northwest)
+    test_profiles_yes = []
+    test_profiles_no = []
+    for age in [19, 20, 25, 30, 40, 50, 60]:
+        for bmi in [18.5, 22.0, 24.0, 28.0, 30.0, 35.0, 40.0]:
+            for children in [0, 1, 2, 3]:
+                for sex in ["male", "female"]:
+                    for region in ["northeast", "northwest", "southeast", "southwest"]:
+                        test_profiles_yes.append({"age": age, "sex": sex, "bmi": bmi, "children": children, "region": region, "smoker": "yes"})
+                        test_profiles_no.append({"age": age, "sex": sex, "bmi": bmi, "children": children, "region": region, "smoker": "no"})
+
+    df_p_yes = pd.DataFrame(test_profiles_yes)
+    df_p_no = pd.DataFrame(test_profiles_no)
+    preds_yes = pipeline.predict(df_p_yes)
+    preds_no = pipeline.predict(df_p_no)
+    violations = np.sum(preds_yes <= preds_no)
+    min_savings = np.min(preds_yes - preds_no)
+
+    print(f"[AUDIT] Monotonicity Check ({len(test_profiles_yes)} profile pairs): {violations} violations (Min Smoker Premium Delta: +${min_savings:,.2f})")
+
+    # Specific Devin PR review regression check (20yo male, northwest, BMI 24, 2 dependents)
+    devin_check_df = pd.DataFrame([
+        {"age": 20, "sex": "male", "bmi": 24.0, "children": 2, "region": "northwest", "smoker": "no"},
+        {"age": 20, "sex": "male", "bmi": 24.0, "children": 2, "region": "northwest", "smoker": "yes"},
+    ])
+    devin_preds = pipeline.predict(devin_check_df)
+    devin_savings = devin_preds[1] - devin_preds[0]
+    print(f"[AUDIT] Devin PR Profile Savings Check (20yo NW BMI 24, 2 dep): +${devin_savings:,.2f}")
+
+    if violations > 0 or devin_savings <= 0:
+        print(f"[FAIL] Monotonicity failure: {violations} profiles priced smokers cheaper than non-smokers.")
         sys.exit(1)
 
     # 5. Gate Assertions

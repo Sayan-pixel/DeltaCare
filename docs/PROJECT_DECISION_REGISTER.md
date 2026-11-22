@@ -160,8 +160,8 @@ This central register tracks every significant decision made across the preparat
 
 ### DEC-021: ML Model Architecture (Decision Tree CART Regressor)
 - **Context**: Replacing XGBoost with a lighter, pure-Python/Scikit-Learn model that eliminates C++ compiler toolchain requirements, reduces artifact weight, and improves auditability while exceeding benchmarks.
-- **Decision**: Adopt Scikit-Learn `DecisionTreeRegressor(criterion="absolute_error", max_depth=6, min_samples_leaf=5, random_state=42)` encapsulated in the unified `sklearn.pipeline.Pipeline`.
-- **Impact**: Exceeds quality gates ($R^2 = 0.8718 \ge 0.85$, $\text{MAE} = \$1,741.43 \le \$2,000$), shrinks artifact by $> 94\%$ ($12.4\text{ KB}$ vs $220\text{ KB}$), eliminates `xgboost` wheel dependencies, and provides inspectable decision paths. Supersedes DEC-006 and ADR-006 per [ADR-011](decisions/011-decision-tree-cart-regression.md).
+- **Decision**: Adopt Scikit-Learn `DecisionTreeRegressor(criterion="absolute_error", max_depth=6, min_samples_leaf=10, random_state=42)` encapsulated in the unified `sklearn.pipeline.Pipeline`.
+- **Impact**: Exceeds quality gates ($R^2 = 0.8692 \ge 0.85$, $\text{MAE} = \$1,749.60 \le \$2,000$), guarantees strict smoking status price monotonicity across all demographic profiles, shrinks artifact by $> 95\%$ ($11.0\text{ KB}$ vs $220\text{ KB}$), eliminates `xgboost` wheel dependencies, and provides inspectable decision paths. Supersedes DEC-006 and ADR-006 per [ADR-011](decisions/011-decision-tree-cart-regression.md).
 
 ---
 

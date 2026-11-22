@@ -1,7 +1,7 @@
 {
   "model_name": "DeltaCare Decision Tree Regressor (CART)",
   "version": "1.0.0",
-  "trained_at": "2026-11-20T20:40:05.066475+00:00",
+  "trained_at": "2026-11-22T05:55:39.407108+00:00",
   "random_state": 42,
   "dataset_rows": 1338,
   "train_rows": 1070,
@@ -25,11 +25,11 @@
     "region"
   ],
   "metrics": {
-    "r2_score": 0.8718,
-    "mae": 1741.43,
-    "rmse": 4461.72
+    "r2_score": 0.8692,
+    "mae": 1749.6,
+    "rmse": 4507.11
   },
-  "confidence_margin_annual": 1741.43,
-  "confidence_margin_monthly": 145.12,
+  "confidence_margin_annual": 1749.6,
+  "confidence_margin_monthly": 145.8,
   "clamping_floor_annual": 1000.0
 }
