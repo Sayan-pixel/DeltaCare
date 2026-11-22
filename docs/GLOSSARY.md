@@ -21,6 +21,7 @@
 
 ## 2. Machine Learning Terminology
 
+- **CART (Classification and Regression Trees)**: A non-parametric decision tree algorithm that partitions the feature space using binary recursive splitting. In DeltaCare, Scikit-Learn's `DecisionTreeRegressor` (with L1 absolute error criterion, `max_depth=6`, and `min_samples_leaf=5`) is used to predict continuous medical charges with high non-linear interaction accuracy ($R^2 = 0.8718$).
 - **ColumnTransformer**: A scikit-learn utility that allows different input columns or subsets of features to be independently transformed (e.g., numericals scaled, categoricals one-hot encoded) and concatenated into a single feature matrix.
 - **Explainability (SHAP)**: *SHapley Additive exPlanations*, a game-theoretic approach to explain the output of any machine learning model by computing the marginal contribution of each feature to the individual prediction.
 - **MAE (Mean Absolute Error)**: A continuous regression metric measuring the average magnitude of the errors in a set of predictions, without considering their direction: $\text{MAE} = \frac{1}{n}\sum |y_i - \hat{y}_i|$.
@@ -28,7 +29,7 @@
 - **RMSE (Root Mean Squared Error)**: A regression metric that penalizes larger errors more severely than MAE: $\text{RMSE} = \sqrt{\frac{1}{n}\sum (y_i - \hat{y}_i)^2}$.
 - **Train-Serve Skew**: A dangerous software defect where data transformations applied during model training differ subtly from transformations applied during real-time online inference, causing erratic or degraded predictions.
 - **Unified Pipeline**: A software pattern in scikit-learn (`sklearn.pipeline.Pipeline`) where preprocessing transformers and estimators are serialized into a single binary object (`model.joblib`), completely eliminating train-serve skew.
-- **XGBoost**: *Extreme Gradient Boosting*, an optimized distributed gradient boosting library implementing machine learning algorithms under the Gradient Boosting framework.
+- **XGBoost**: *Extreme Gradient Boosting*, an optimized distributed gradient boosting library (used historically in DeltaCare Phase 1 baseline; superseded by CART per ADR-011).
 
 ---
 

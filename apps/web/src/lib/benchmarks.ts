@@ -5,12 +5,12 @@ import { formatUSD } from "./format";
  * Updating here keeps ModelFacts, Faq, and PrintableReport consistent across the UI.
  */
 export const MODEL_BENCHMARKS = {
-  modelName: "DeltaCare XGBoost Regressor",
+  modelName: "DeltaCare Decision Tree Regressor (CART)",
   version: "1.0.0",
-  r2Score: 0.8695,
+  r2Score: 0.8692,
   r2Display: "0.87",
-  maeAnnual: 1645.52,
-  maeMonthly: 137.13,
+  maeAnnual: 1749.6,
+  maeMonthly: 145.8,
   datasetRows: 1338,
   trainRows: 1070,
   testRows: 268,

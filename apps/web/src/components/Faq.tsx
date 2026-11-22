@@ -13,7 +13,7 @@ const ITEMS = [
   },
   {
     q: "Why does tobacco use raise the predicted premium so sharply?",
-    a: "Actuarial health cost datasets exhibit a strong non-linear interaction between smoking status and BMI. Gradient boosted trees (XGBoost) capture this compounded risk curve directly.",
+    a: "Actuarial health cost datasets exhibit a strong non-linear interaction between smoking status and BMI. Decision Tree Regression (CART) captures this compounded risk threshold directly.",
   },
   {
     q: "Why can the first calculation take 10–15 seconds?",

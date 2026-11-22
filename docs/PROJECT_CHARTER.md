@@ -27,7 +27,7 @@ The current health insurance quoting landscape presents severe friction for cons
 ## 3. Proposed Solution
 
 A modern, decoupled, three-tier cloud micro-product operating on a strict **$0 perpetual hosting budget**:
-1. **The Brain (ML Pipeline)**: An automated machine learning pipeline training a tree-based ensemble regressor (XGBoost/LightGBM) on the standard US Medical Cost Personal Dataset (`insurance.csv`), serialized as a unified transformer-regressor pipeline artifact.
+1. **The Brain (ML Pipeline)**: An automated machine learning pipeline training an interaction-aware decision tree regressor (CART via Scikit-Learn) on the standard US Medical Cost Personal Dataset (`insurance.csv`), serialized as a unified transformer-regressor pipeline artifact.
 2. **The Engine (Backend REST API)**: A lightweight, stateless Python FastAPI service exposing transactional `GET /health` and `POST /predict` endpoints, protected by in-memory rate limiting (`slowapi`) and strict CORS policies.
 3. **The Face (Frontend Web UI)**: A responsive, high-performance Next.js/React and Tailwind CSS single-page interface deployed to edge CDN, featuring debounced dynamic inputs, interactive What-If calculation deltas, statistical confidence ranges, and cold-start UX guardrails.
 

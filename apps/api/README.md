@@ -15,7 +15,7 @@ Transparent, data-driven health insurance premium prediction REST API.
 
 - **Hosting**: Hugging Face Spaces (Free CPU tier: 2 vCPUs, 16GB RAM)
 - **Framework**: FastAPI + Uvicorn + Docker
-- **Inference**: Scikit-Learn + XGBoost unified pipeline (`model.joblib`)
+- **Inference**: Scikit-Learn Decision Tree (CART) unified pipeline (`model.joblib`)
 - **Port**: 7860
 - **Rate Limit**: 60 requests/minute per IP (`slowapi`)
 

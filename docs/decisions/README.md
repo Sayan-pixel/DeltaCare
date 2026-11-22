@@ -39,11 +39,12 @@ The records in this directory serve as the **permanent historical memory** of th
 | [ADR-003](003-unified-sklearn-pipeline.md) | Unified Scikit-Learn Pipeline Serialization | **Accepted** | 2026-11-08 | Machine Learning Architecture |
 | [ADR-004](004-stateless-b2c-mvp.md) | Stateless B2C Architecture for Phase 1 MVP | **Accepted** | 2026-11-08 | Data & Persistence Architecture |
 | [ADR-005](005-in-memory-token-bucket-rate-limiting.md) | In-Memory Token Bucket Abuse Prevention via slowapi | **Accepted** | 2026-11-08 | Security & Resilience |
-| [ADR-006](006-tree-ensemble-xgboost-regression.md) | Tree Ensemble Model Selection (XGBoost) | **Accepted** | 2026-11-08 | Machine Learning Architecture |
+| [ADR-006](006-tree-ensemble-xgboost-regression.md) | Tree Ensemble Model Selection (XGBoost) | **Superseded** | 2026-11-08 | Machine Learning Architecture |
 | [ADR-007](007-three-stage-cold-start-ux.md) | 3-Stage Cold-Start Progress UX Hierarchy | **Accepted** | 2026-11-08 | Frontend & UX Architecture |
 | [ADR-008](008-static-holdout-mae-confidence-bounds.md) | Statistical Confidence Margins via Validation MAE | **Accepted** | 2026-11-08 | Actuarial & Data Modeling |
 | [ADR-009](009-client-side-debounce-damping.md) | Client-Side 400ms Debounce Traffic Damping | **Accepted** | 2026-11-08 | Frontend & Network Optimization |
 | [ADR-010](010-structured-stdout-log-sanitization.md) | Zero-PII Structured Logging to STDOUT | **Accepted** | 2026-11-08 | Observability & Privacy |
+| [ADR-011](011-decision-tree-cart-regression.md) | Decision Tree Regression Model Selection (CART) | **Accepted** | 2026-11-20 | Machine Learning Architecture |
 
 ---
 

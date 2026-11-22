@@ -8,7 +8,6 @@ slowapi>=0.1.10
 
 # Machine Learning & Tabular Processing
 scikit-learn==1.9.1
-xgboost>=2.0.0,<=3.2.0
 joblib==1.6.0
 pandas==3.1.1
 numpy==2.4.4

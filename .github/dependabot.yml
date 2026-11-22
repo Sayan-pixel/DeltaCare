@@ -11,8 +11,6 @@ updates:
         patterns:
           - "*"
     ignore:
-      - dependency-name: "xgboost"
-        versions: [">= 3.3.0"]
       - dependency-name: "numpy"
         versions: [">= 2.5.0"]
     labels:

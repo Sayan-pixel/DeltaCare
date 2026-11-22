@@ -32,7 +32,7 @@ Unlike traditional black-box calculators, DeltaCare provides **actionable transp
 flowchart LR
     A[Anonymous Consumer] -->|Demographic & Health Inputs| B[Vercel Edge Next.js UI]
     B -->|Stateless JSON POST| C[Render Cloud Web Service]
-    C -->|FastAPI + slowapi| D[Unified ML Pipeline XGBoost + Preprocessing]
+    C -->|FastAPI + slowapi| D[Unified ML Pipeline CART Decision Tree + Preprocessing]
     D -->|Predicted Premium + Confidence Margin| C
     C -->|JSON Payload| B
     B -->|Monthly Estimate + What-If Savings Badge| A
@@ -62,7 +62,7 @@ E:\DeltaCare/
 
 | Tier | Component | Technology | Hosting / Environment | Free-Tier Guarantee |
 | :--- | :--- | :--- | :--- | :--- |
-| **Brain** | ML Pipeline | Python, Scikit-learn, XGBoost | Local / CI Automation | Fully scripted; zero external API costs |
+| **Brain** | ML Pipeline | Python, Scikit-learn (CART Decision Tree) | Local / CI Automation | Fully scripted; zero external API costs |
 | **Engine** | REST API | FastAPI, Pydantic, slowapi, Uvicorn | **Render.com** | 100% Free Web Service tier (zero credit card) |
 | **Face** | Web Client | Next.js / React, Tailwind CSS, TypeScript | **Vercel** | Perpetual free tier, global edge CDN, automatic SSL, zero sleep |
 | **State** | Persistence | Stateless (Phase 1) | In-Memory Token Bucket | No database hosting fees or PII storage risk |

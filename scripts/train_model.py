@@ -1,8 +1,8 @@
 """
 DeltaCare Model Training Script
-Trains a tree-ensemble regressor (XGBoost) within a unified scikit-learn Pipeline.
+Trains a Decision Tree Regressor (CART) within a unified scikit-learn Pipeline.
 Serializes the fitted pipeline to apps/api/models/model.joblib and exports holdout metrics.
-Traceability: FR-002, FR-003, ADR-003, ADR-006, ADR-008
+Traceability: FR-002, FR-003, ADR-003, ADR-011
 """
 
 import json
@@ -17,11 +17,11 @@ from sklearn.metrics import mean_absolute_error, r2_score, root_mean_squared_err
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from xgboost import XGBRegressor
+from sklearn.tree import DecisionTreeRegressor
 
 
 def build_pipeline() -> Pipeline:
-    """Constructs the unified preprocessing and regression pipeline."""
+    """Constructs the unified preprocessing and regression pipeline using CART."""
     numerical_features = ["age", "bmi", "children"]
     categorical_features = ["sex", "smoker", "region"]
 
@@ -33,13 +33,11 @@ def build_pipeline() -> Pipeline:
         remainder="drop",
     )
 
-    regressor = XGBRegressor(
-        objective="reg:absoluteerror",
-        n_estimators=200,
-        max_depth=3,
-        learning_rate=0.1,
+    regressor = DecisionTreeRegressor(
+        criterion="absolute_error",
+        max_depth=6,
+        min_samples_leaf=10,
         random_state=42,
-        n_jobs=-1,
     )
 
     return Pipeline(
@@ -63,7 +61,7 @@ def train_and_evaluate(data_path: Path, output_dir: Path):
     print(f"[INFO] Train samples: {len(X_train)} | Test samples: {len(X_test)}")
 
     pipeline = build_pipeline()
-    print("[INFO] Fitting unified pipeline (StandardScaler + OneHotEncoder + XGBRegressor)...")
+    print("[INFO] Fitting unified pipeline (StandardScaler + OneHotEncoder + DecisionTreeRegressor)...")
     pipeline.fit(X_train, y_train)
 
     # Evaluate on holdout test set
@@ -93,7 +91,7 @@ def train_and_evaluate(data_path: Path, output_dir: Path):
 
     # Export metadata and confidence bounds
     metadata = {
-        "model_name": "DeltaCare XGBoost Regressor",
+        "model_name": "DeltaCare Decision Tree Regressor (CART)",
         "version": "1.0.0",
         "trained_at": datetime.now(timezone.utc).isoformat(),
         "random_state": 42,

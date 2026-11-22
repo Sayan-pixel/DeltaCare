@@ -24,7 +24,7 @@ flowchart TD
     
     subgraph DeltaCare_System [DeltaCare System Boundary]
         WebClient[DeltaCare Web Client\nNext.js / React + Tailwind\nHosted on Vercel Edge CDN]
-        APIContainer[DeltaCare Quoting Engine\nFastAPI + Docker + XGBoost\nHosted on Hugging Face Spaces]
+        APIContainer[DeltaCare Quoting Engine\nFastAPI + Docker + CART Tree\nHosted on Hugging Face Spaces]
     end
     
     DataMirror[(Authoritative Data Mirror\nRaw insurance.csv)]
@@ -76,7 +76,7 @@ flowchart TB
         
         subgraph PipelineLayer [Machine Learning Engine]
             ModelPredictor[In-Memory Predictor Singleton]
-            JoblibArtifact[model.joblib\nStandardScaler + OneHotEncoder + XGBRegressor]
+            JoblibArtifact[model.joblib\nStandardScaler + OneHotEncoder + DecisionTreeRegressor]
             GuardrailModule[Mathematical Floor Guardrail\nClamps charges >= $1,000]
         end
         
@@ -99,7 +99,7 @@ flowchart TB
 | :--- | :--- | :--- | :--- | :--- |
 | **Edge Web Client** | Next.js / React, Tailwind CSS | Vercel Hobby Tier | Edge Serverless / CDN | Immediate DOM rendering, form validation, cold-start timer states, What-If diffs. |
 | **API Gateway** | FastAPI, Uvicorn, slowapi | Hugging Face Spaces | 2 vCPUs, 16GB RAM | Request throttling (60 req/min), CORS enforcement, Pydantic schema validation. |
-| **ML Inference Engine** | Scikit-learn, XGBoost, joblib | In-Memory Singleton | Embedded in FastAPI process | Atomic deserialization of unified pipeline; $< 100\text{ms}$ continuous inference. |
+| **ML Inference Engine** | Scikit-learn (CART), joblib | In-Memory Singleton | Embedded in FastAPI process | Atomic deserialization of unified pipeline; $< 100\text{ms}$ continuous inference. |
 
 ---
 

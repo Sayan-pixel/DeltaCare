@@ -138,17 +138,18 @@ graph TD
 
 ## 8. Decisions & Architecture Decision Records (ADRs) ([`docs/decisions/`](decisions/))
 
-- **Central Decision Register**: [PROJECT_DECISION_REGISTER.md](PROJECT_DECISION_REGISTER.md) (Master tracking DEC-001 through DEC-020)
+- **Central Decision Register**: [PROJECT_DECISION_REGISTER.md](PROJECT_DECISION_REGISTER.md) (Master tracking DEC-001 through DEC-021)
 - [ADR-001: Adoption of Decoupled Monorepo Structure](decisions/001-decoupled-monorepo.md)
 - [ADR-002: Perpetual $0 Infrastructure & Hosting Strategy](decisions/002-zero-dollar-hosting-strategy.md)
 - [ADR-003: Unified Scikit-Learn Pipeline Serialization](decisions/003-unified-sklearn-pipeline.md)
 - [ADR-004: Stateless B2C Architecture for Phase 1 MVP](decisions/004-stateless-b2c-mvp.md)
 - [ADR-005: In-Memory Token Bucket Abuse Prevention via slowapi](decisions/005-in-memory-token-bucket-rate-limiting.md)
-- [ADR-006: Tree Ensemble Model Selection (XGBoost)](decisions/006-tree-ensemble-xgboost-regression.md)
+- [ADR-006: Tree Ensemble Model Selection (XGBoost)](decisions/006-tree-ensemble-xgboost-regression.md) *(Superseded by ADR-011)*
 - [ADR-007: 3-Stage Cold-Start Progress UX Hierarchy](decisions/007-three-stage-cold-start-ux.md)
 - [ADR-008: Statistical Confidence Margins via Validation MAE](decisions/008-static-holdout-mae-confidence-bounds.md)
 - [ADR-009: Client-Side 400ms Debounce Traffic Damping](decisions/009-client-side-debounce-damping.md)
 - [ADR-010: Zero-PII Structured Logging to STDOUT](decisions/010-structured-stdout-log-sanitization.md)
+- [ADR-011: Decision Tree Regression Model Selection (CART)](decisions/011-decision-tree-cart-regression.md)
 
 ---
 

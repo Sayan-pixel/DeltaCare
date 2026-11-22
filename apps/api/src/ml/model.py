@@ -1,7 +1,7 @@
 """
 ML Inference Service for DeltaCare
 Loads the serialized unified pipeline and executes clamped stateless predictions.
-Traceability: FR-003, FR-005, FR-006, ADR-003, ADR-008
+Traceability: FR-003, FR-005, FR-006, ADR-003, ADR-008, ADR-011
 """
 
 import json
@@ -19,7 +19,7 @@ from ..schemas.quote import QuoteRequest, QuoteResponse
 
 class ModelService:
     """
-    Manages lifecycle and inference for the unified scikit-learn + XGBoost pipeline.
+    Manages lifecycle and inference for the unified scikit-learn + DecisionTreeRegressor (CART) pipeline.
     """
     def __init__(self):
         self.pipeline: Optional[Pipeline] = None
@@ -45,8 +45,8 @@ class ModelService:
         else:
             logger.warning(f"Model metadata file missing at: {meta_path}; using fallback defaults.")
             self.metadata = {
-                "confidence_margin_annual": 1645.52,
-                "confidence_margin_monthly": 137.13,
+                "confidence_margin_annual": 1749.60,
+                "confidence_margin_monthly": 145.80,
             }
 
         self.is_loaded = True
@@ -72,7 +72,7 @@ class ModelService:
             }
         ])
 
-        # Execute unified pipeline (StandardScaler + OneHotEncoder + XGBRegressor)
+        # Execute unified pipeline (StandardScaler + OneHotEncoder + DecisionTreeRegressor)
         raw_annual = float(self.pipeline.predict(input_df)[0])
 
         # FR-006: Mathematical floor guardrail (>= $1,000.00/year)
@@ -80,7 +80,7 @@ class ModelService:
         predicted_monthly = round(predicted_annual / 12.0, 2)
 
         # ADR-008: Static empirical MAE confidence brackets
-        margin_annual = float(self.metadata.get("confidence_margin_annual", 1645.52))
+        margin_annual = float(self.metadata.get("confidence_margin_annual", 1741.43))
         margin_monthly = float(self.metadata.get("confidence_margin_monthly", round(margin_annual / 12.0, 2)))
 
         range_annual_lower = round(max(predicted_annual - margin_annual, settings.MINIMUM_PREMIUM_FLOOR), 2)

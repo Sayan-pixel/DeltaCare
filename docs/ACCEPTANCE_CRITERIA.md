@@ -21,7 +21,7 @@ Feature: Machine Learning Model Holdout Evaluation
   Scenario: The model must satisfy actuarial performance gates on unseen data
     Given the US insurance dataset (1,338 records)
     When the automated training script splits the data 80/20 into train and test sets
-    And fits the XGBoost ensemble regressor via the unified Pipeline
+    And fits the CART decision tree regressor via the unified Pipeline
     Then the calculated R-squared score on the test set must be >= 0.85
     And the calculated Mean Absolute Error (MAE) must be <= 2000.00 USD
 ```
