@@ -38,7 +38,7 @@ graph TD
         
         ML_Predictor[ModelPredictor Singleton\nIn-Memory Invocator]
         ML_Guardrail[Guardrail Module\nMathematical Floor Enforcement]
-        ML_Artifact[(model.joblib\nStandardScaler + OneHot + XGBoost)]
+        ML_Artifact[(model.joblib\nStandardScaler + OneHot + DecisionTreeRegressor)]
     end
 
     UI_Form --> Hook_Calc

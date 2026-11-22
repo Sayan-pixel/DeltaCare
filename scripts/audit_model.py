@@ -1,7 +1,7 @@
 """
 DeltaCare Automated Holdout Benchmark Audit Gate
 Validates that apps/api/models/model.joblib satisfies strict holdout quality criteria.
-Traceability: FR-002, FR-003, NFR-001, ADR-003, ADR-006, ADR-008
+Traceability: FR-002, FR-003, NFR-001, ADR-003, ADR-008, ADR-011
 """
 
 import sys

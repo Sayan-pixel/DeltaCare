@@ -14,8 +14,8 @@ const FACTS = [
   },
   {
     label: "Model Architecture",
-    value: "XGBoost",
-    detail: "Gradient-boosted decision trees capturing non-linear BMI × smoking interactions.",
+    value: "CART Tree",
+    detail: "Interpretable Decision Tree (CART) regressor with L1 loss capturing non-linear BMI × smoking interactions.",
   },
   {
     label: "Actuarial Minimum",

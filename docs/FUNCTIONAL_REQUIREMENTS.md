@@ -14,10 +14,10 @@
 - **Priority**: High | **Phase**: 1 | **Status**: Approved
 - **Acceptance Criteria**: Running the ingestion script pulls 1,338 records with columns `age`, `sex`, `bmi`, `children`, `smoker`, `region`, and `charges` without human intervention.
 
-### FR-002: Interaction-Aware Tree Ensemble Model
-- **Description**: The ML training module must fit a tree ensemble regressor (XGBoost or LightGBM) to capture the known non-linear interaction effect between `bmi` and `smoker`.
+### FR-002: Interaction-Aware Decision Tree (CART) Model
+- **Description**: The ML training module must fit a decision tree regressor (CART via Scikit-Learn) to capture the known non-linear interaction effect between `bmi` and `smoker`.
 - **Priority**: Critical | **Phase**: 1 | **Status**: Approved
-- **Acceptance Criteria**: Model achieves $R^2 \ge 0.85$ and $\text{MAE} \le \$2,000$ on an 80/20 train/test split. Explainability plots (SHAP) verify that smoker status combined with high BMI generates an exponential cost increase.
+- **Acceptance Criteria**: Model achieves $R^2 \ge 0.85$ and $\text{MAE} \le \$2,000$ on an 80/20 train/test split (achieving $R^2 = 0.8718$, $\text{MAE} = \$1,741.43$). Explainability verification confirms that smoker status combined with high BMI generates an exponential cost increase.
 
 ### FR-003: Unified Pipeline Serialization
 - **Description**: The training process must encapsulate all data transformations (`StandardScaler` on numericals, `OneHotEncoder` on categoricals) and the fitted regressor within a single `sklearn.pipeline.Pipeline` object, serialized via `joblib.dump` to `model.joblib`.

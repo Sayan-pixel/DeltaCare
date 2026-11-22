@@ -29,11 +29,11 @@ This central register tracks every significant decision made across the preparat
 | ID | Decision Title | Category | Status | Approval | Date | Authoritative Reference |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **DEC-001** | Project Naming & Product Identity (`DeltaCare`) | Product | `Approved` | Project Lead | 2026-11-08 | [PROJECT_CHARTER.md](PROJECT_CHARTER.md) |
-| **DEC-002** | Core Technology Stack (FastAPI + Next.js + XGBoost + Tailwind) | Architecture | `Approved` | Principal Architect | 2026-11-08 | [SYSTEM_ARCHITECTURE.md](architecture/SYSTEM_ARCHITECTURE.md) |
+| **DEC-002** | Core Technology Stack (FastAPI + Next.js + CART + Tailwind) | Architecture | `Approved` | Principal Architect | 2026-11-08 | [SYSTEM_ARCHITECTURE.md](architecture/SYSTEM_ARCHITECTURE.md) |
 | **DEC-003** | Database Strategy (Phase 1 100% Stateless; Phase 2 PostgreSQL) | Data | `Approved` | Database Architect | 2026-11-08 | [ADR-004](decisions/004-stateless-b2c-mvp.md), [DATABASE_DESIGN.md](database/DATABASE_DESIGN.md) |
 | **DEC-004** | Repository Topology (Decoupled Monorepo in `E:\DeltaCare`) | DevOps | `Approved` | DevOps Lead | 2026-11-08 | [ADR-001](decisions/001-decoupled-monorepo.md) |
 | **DEC-005** | Hosting & Infrastructure ($0 Perpetual Budget: Vercel + HF Spaces) | Infrastructure | `Approved` | Platform Lead | 2026-11-08 | [ADR-002](decisions/002-zero-dollar-hosting-strategy.md) |
-| **DEC-006** | Machine Learning Model Architecture (XGBoost Regressor) | Data Science | `Approved` | ML Engineer | 2026-11-08 | [ADR-006](decisions/006-tree-ensemble-xgboost-regression.md) |
+| **DEC-006** | Machine Learning Model Architecture (XGBoost Regressor) | Data Science | `Superseded` | ML Engineer | 2026-11-08 | [ADR-006](decisions/006-tree-ensemble-xgboost-regression.md) (Superseded by DEC-021) |
 | **DEC-007** | Model Pipeline Serialization (Unified Scikit-Learn `model.joblib`) | ML Ops | `Approved` | ML Engineer | 2026-11-08 | [ADR-003](decisions/003-unified-sklearn-pipeline.md) |
 | **DEC-008** | Stateless Public B2C MVP Scope (Zero Auth/Sessions/PII in Phase 1) | Security | `Approved` | Security Architect | 2026-11-08 | [ADR-004](decisions/004-stateless-b2c-mvp.md), [DATA_PRIVACY.md](security/DATA_PRIVACY.md) |
 | **DEC-009** | Rate Limiting & Abuse Prevention (`slowapi` 60 req/min Token Bucket) | Security | `Approved` | Security Architect | 2026-11-08 | [ADR-005](decisions/005-in-memory-token-bucket-rate-limiting.md) |
@@ -48,6 +48,7 @@ This central register tracks every significant decision made across the preparat
 | **DEC-018** | CI/CD Quality Automation (GitHub Actions with Strict Lint/Type/Test Gates) | DevOps | `Approved` | Platform Lead | 2026-11-08 | [CI_CD_STRATEGY.md](devops/CI_CD_STRATEGY.md) |
 | **DEC-019** | Model Evaluation Quality Gates (Holdout $R^2 \ge 0.85$, $\text{MAE} \le \$2,000$) | ML / QA | `Approved` | QA Lead | 2026-11-08 | [TEST_PLAN.md](testing/TEST_PLAN.md) (TC-011) |
 | **DEC-020** | Container Isolation & Non-Root Execution (`deltacare:10001` User) | Security | `Approved` | Security Architect | 2026-11-08 | [SECURITY_ARCHITECTURE.md](security/SECURITY_ARCHITECTURE.md) |
+| **DEC-021** | Machine Learning Model Architecture (Decision Tree CART Regressor) | Data Science | `Approved` | ML Engineer | 2026-11-20 | [ADR-011](decisions/011-decision-tree-cart-regression.md) |
 
 ---
 
@@ -61,7 +62,7 @@ This central register tracks every significant decision made across the preparat
 ### DEC-002: Technology Stack Selection
 - **Context**: Rapid development, type-safe execution, zero-cost operation, high statistical performance.
 - **Decision**: 
-  - Backend: Python 3.11, FastAPI, Pydantic v2, Scikit-Learn, XGBoost, Uvicorn.
+  - Backend: Python 3.11, FastAPI, Pydantic v2, Scikit-Learn (CART DecisionTreeRegressor), Uvicorn.
   - Frontend: Next.js 14 (App Router), TypeScript 5.x, React 18, Tailwind CSS, Lucide Icons.
 - **Alternatives Rejected**: Flask (lacks async/native OpenAPI), Django (monolithic overhead), pure Scikit-Learn Linear Regression (insufficient non-linear interaction modeling).
 
@@ -82,9 +83,9 @@ This central register tracks every significant decision made across the preparat
   - Backend: Hugging Face Spaces Docker / FastAPI Free CPU Tier (2 vCPUs, 16 GB RAM, persistent container endpoint).
 - **Alternatives Rejected**: AWS EC2/ECS (incurs perpetual cost), Heroku (no free tier), Render Free (512MB RAM causes OOM under ML load).
 
-### DEC-006: ML Model Architecture (XGBoost)
+### DEC-006: ML Model Architecture (XGBoost) *(Superseded by DEC-021)*
 - **Context**: Need accurate estimation of health insurance premiums conditioned on demographic and behavioral risk factors with complex non-linear interactions (e.g. `smoker` $\times$ `bmi`).
-- **Decision**: Extreme Gradient Boosting (`XGBRegressor`) with early stopping, tuned via cross-validated RandomizedSearchCV.
+- **Decision**: Extreme Gradient Boosting (`XGBRegressor`) with early stopping, tuned via cross-validated RandomizedSearchCV. *(Superseded by DEC-021 / ADR-011: replaced by CART DecisionTreeRegressor to eliminate C++ native compilation dependencies and reduce artifact size to 12.4 KB).*
 - **Impact**: High fidelity ($R^2 \ge 0.85$, $\text{MAE} \le \$2,000$), rapid inference ($< 15\text{ms}$ execution latency), modest memory footprint ($< 120\text{MB}$).
 
 ### DEC-007: Unified Scikit-Learn Pipeline Serialization
@@ -156,6 +157,11 @@ This central register tracks every significant decision made across the preparat
 - **Context**: Securing backend container against container breakout and unauthorized privilege escalation.
 - **Decision**: Hugging Face Spaces `Dockerfile` explicitly creates and runs under non-root UID 10001 (`deltacare`).
 - **Impact**: Complies with least-privilege security benchmarks.
+
+### DEC-021: ML Model Architecture (Decision Tree CART Regressor)
+- **Context**: Replacing XGBoost with a lighter, pure-Python/Scikit-Learn model that eliminates C++ compiler toolchain requirements, reduces artifact weight, and improves auditability while exceeding benchmarks.
+- **Decision**: Adopt Scikit-Learn `DecisionTreeRegressor(criterion="absolute_error", max_depth=6, min_samples_leaf=5, random_state=42)` encapsulated in the unified `sklearn.pipeline.Pipeline`.
+- **Impact**: Exceeds quality gates ($R^2 = 0.8718 \ge 0.85$, $\text{MAE} = \$1,741.43 \le \$2,000$), shrinks artifact by $> 94\%$ ($12.4\text{ KB}$ vs $220\text{ KB}$), eliminates `xgboost` wheel dependencies, and provides inspectable decision paths. Supersedes DEC-006 and ADR-006 per [ADR-011](decisions/011-decision-tree-cart-regression.md).
 
 ---
 

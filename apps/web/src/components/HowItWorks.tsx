@@ -11,7 +11,7 @@ const STEPS = [
     number: "02",
     title: "Unified ML pipeline inference",
     description:
-      "Your anonymized profile runs through a locked Scikit-Learn ColumnTransformer and XGBoost regressor with zero train-serve drift.",
+      "Your anonymized profile runs through a locked Scikit-Learn ColumnTransformer and Decision Tree (CART) regressor with zero train-serve drift.",
   },
   {
     number: "03",

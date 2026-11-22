@@ -1,11 +1,14 @@
 # ADR-006: Tree Ensemble Model Selection (XGBoost)
 
 **Document Version**: 1.0.0  
-**Status**: Accepted  
+**Status**: Superseded by [ADR-011](011-decision-tree-cart-regression.md)  
 **Date**: 2026-11-08  
 **Deciders**: Senior ML Engineer, Data Scientist, Technical Lead  
 **Technical Lead Approval**: Approved by Technical Lead on 2026-11-08  
-**Related ADRs**: [ADR-003](003-unified-sklearn-pipeline.md)
+**Related ADRs**: [ADR-003](003-unified-sklearn-pipeline.md), [ADR-011](011-decision-tree-cart-regression.md)
+
+> [!NOTE]
+> **Superseded**: This decision has been superseded by [ADR-011: Decision Tree Regression Model Selection (CART)](011-decision-tree-cart-regression.md). DeltaCare has transitioned from XGBoost to a Scikit-Learn CART Decision Tree Regressor to eliminate external C++ compilation dependencies, reduce artifact size to 12.4 KB, and achieve $R^2 = 0.8718$.
 
 ---
 
