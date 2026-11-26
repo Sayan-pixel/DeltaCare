@@ -1,6 +1,12 @@
 # DeltaCare: Transparent Health Insurance Premium Estimation using Regularized CART Decision Tree Regression
 
-**Course**: CS / DS Machine Learning  
+**Course**: CS306: Machine Learning  
+**Course Instructor**: Dr. Debashree Devi  
+**Student Name**: Sayan Shit  
+**Roll Number**: 2401179  
+**Academic Program**: B. Tech. 3rd Year, Computer Science and Engineering (CSE)  
+**Institution**: Indian Institute of Information Technology Guwahati (IIIT Guwahati), Assam, India  
+**Academic Session**: 2026  
 **Project Title**: DeltaCare — Actuarial Risk Estimation & Counterfactual Lifestyle Analysis  
 **Model Architecture**: Classification and Regression Trees (CART — `sklearn.tree.DecisionTreeRegressor`)  
 **Submission Artifact**: Comprehensive Project Report & Benchmark Audit  
@@ -72,12 +78,12 @@ $$r_{xy} = \frac{\text{Cov}(X, Y)}{s_x s_y} = \frac{\sum_{i=1}^N (x_i - \bar{x})
 
 | Feature ($X$) | Target Covariance $\text{Cov}(X, \text{charges})$ | Pearson Correlation ($r$) | Statistical Interpretation |
 | :--- | :---: | :---: | :--- |
-| **`smoker`** (binary encoded) | $4.42 \times 10^3$ | **$+0.787$** | Dominant driver; strong positive correlation with claims |
-| **`age`** | $4.09 \times 10^4$ | **$+0.299$** | Moderate positive linear drift (aging risk) |
-| **`bmi`** | $1.46 \times 10^4$ | **$+0.198$** | Weak global linear correlation (masked by interaction) |
-| **`children`** | $9.93 \times 10^2$ | $+0.068$ | Negligible linear dependency |
-| **`sex`** | $2.97 \times 10^2$ | $+0.057$ | Statistically insignificant linear effect |
-| **`region`** | $-3.12 \times 10^1$ | $-0.006$ | Minimal baseline linear regional variance |
+| **`smoker`** (binary encoded) | $+3.85 \times 10^3$ | **$+0.7873$** | Dominant driver; strong positive correlation with claims |
+| **`age`** | $+5.09 \times 10^4$ | **$+0.2990$** | Moderate positive linear drift (aging risk) |
+| **`bmi`** | $+1.46 \times 10^4$ | **$+0.1983$** | Weak global linear correlation (masked by interaction) |
+| **`children`** | $+9.93 \times 10^2$ | $+0.0680$ | Negligible linear dependency |
+| **`sex`** | $+3.47 \times 10^2$ | $+0.0573$ | Statistically insignificant linear effect |
+| **`region`** | $-8.31 \times 10^1$ | $-0.0062$ | Minimal baseline linear regional variance |
 
 ### 2.3 The Non-Linear Interaction Effect: $\text{BMI} \times \text{Smoker}$
 While Pearson's $r$ between `bmi` and `charges` appears weak globally ($r = 0.198$), conditional subset analysis reveals a dramatic interaction:
@@ -166,16 +172,18 @@ $$\hat{y} = h(\mathbf{x}) = \sum_{m=1}^M \hat{c}_m \cdot \mathbb{I}(\mathbf{x} \
 
 At each node, CART performs a greedy search to determine the optimal split variable $j$ and split threshold $s$ dividing the data into half-planes $R_1(j, s) = \{\mathbf{x} \mid x_j \le s\}$ and $R_2(j, s) = \{\mathbf{x} \mid x_j > s\}$.
 
-### 5.2 Splitting Criteria: $L_2$ (Mean) vs. $L_1$ (Median) Loss
-A critical algorithmic decision in regression trees is the choice of impurity criterion:
+### 5.2 Splitting Criteria: $L_2$ (Mean) vs. $L_1$ (Median) Loss & Probabilistic Interpretation
+A critical algorithmic decision in regression trees is the choice of impurity criterion. This can be understood rigorously through Maximum Likelihood Estimation (MLE):
 
 1. **Mean Squared Error ($L_2$ Loss — `criterion="squared_error"`)**:
    $$Q_m(T) = \frac{1}{|R_m|}\sum_{i \in R_m} (y_i - \bar{y}_m)^2, \quad \text{where } \bar{y}_m = \frac{1}{|R_m|}\sum_{i \in R_m} y_i$$
-   The optimal leaf prediction is the conditional sample mean. However, medical claims distributions exhibit heavy positive skew (catastrophic individual hospitalization costs exceeding $\$60,000$). Minimizing squared error causes internal splits to chase extreme outliers, severely distorting standard quotes.
+   - **Probabilistic Origin**: Minimizing $L_2$ loss is mathematically equivalent to Maximum Likelihood Estimation under the assumption of additive Gaussian noise: $\varepsilon_i \sim \mathcal{N}(0, \sigma^2)$. The negative log-likelihood is $\mathcal{L}_{\text{NLL}} \propto \sum (y_i - \hat{y}_i)^2$. Setting the derivative to zero yields the conditional sample mean $\bar{y}_m$.
+   - **Limitation on Healthcare Data**: Medical claims distributions exhibit severe positive skew with heavy tails (e.g., catastrophic hospitalization events exceeding $\$60,000$). Because errors are squared, extreme outliers dominate the loss gradient, pulling split thresholds and leaf predictions upward and artificially inflating quotes for healthy policyholders.
 
 2. **Mean Absolute Error ($L_1$ Loss — `criterion="absolute_error"`)**:
    $$Q_m(T) = \frac{1}{|R_m|}\sum_{i \in R_m} |y_i - \hat{c}_m|, \quad \text{where } \hat{c}_m = \text{median}(\{y_i \mid \mathbf{x}_i \in R_m\})$$
-   The optimal leaf prediction is the conditional sample median. $L_1$ loss is mathematically robust to extreme positive outliers, aligning predictions directly with typical actuarial expected values.
+   - **Probabilistic Origin**: Minimizing $L_1$ loss corresponds directly to MLE under an additive Laplace (double-exponential) noise distribution: $\varepsilon_i \sim \text{Laplace}(0, b)$ with probability density function $p(\varepsilon) = \frac{1}{2b}\exp\left(-\frac{|\varepsilon|}{b}\right)$. The negative log-likelihood is $\mathcal{L}_{\text{NLL}} \propto \sum |y_i - \hat{y}_i|$. Differentiating with respect to $\hat{c}_m$ yields $\sum \text{sgn}(y_i - \hat{c}_m) = 0$, whose solution is the conditional sample median.
+   - **Actuarial Advantage**: The conditional median is highly resistant to outlier contamination. In DeltaCare, $L_1$ optimization guarantees that catastrophic claims do not distort standard plan estimates, achieving an audited holdout MAE of $\$1,749.60$.
 
 ### 5.3 Regularization Hyperparameters
 Unconstrained decision trees grow until every leaf is pure, memorizing noise and training samples. To regularize the hypothesis, we enforce:

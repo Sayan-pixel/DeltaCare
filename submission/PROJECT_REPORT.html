@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DeltaCare — CS306 Machine Learning Project Report | Sayan Shit (2401179)</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+    @bottom-center {
+      content: "IIIT Guwahati · CS306 Machine Learning · Sayan Shit (2401179)";
+      font-size: 8pt;
+      color: #64748b;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    @bottom-right {
+      content: counter(page);
+      font-size: 9pt;
+      font-weight: bold;
+      color: #0f172a;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.65;
+    font-size: 10pt;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  /* Cover Block */
+  .academic-header {
+    border-bottom: 3px double #0284c7;
+    padding-bottom: 20px;
+    margin-bottom: 26px;
+    text-align: center;
+  }
+
+  .inst-name {
+    font-size: 14pt;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: 0.5px;
+    margin: 0 0 4px 0;
+    text-transform: uppercase;
+  }
+
+  .dept-name {
+    font-size: 11pt;
+    font-weight: 600;
+    color: #0284c7;
+    margin: 0 0 12px 0;
+  }
+
+  .meta-grid {
+    display: table;
+    width: 100%;
+    margin-top: 15px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 12px;
+    font-size: 9.5pt;
+  }
+
+  .meta-col {
+    display: table-cell;
+    width: 50%;
+    vertical-align: top;
+    text-align: left;
+  }
+
+  .meta-col.right {
+    text-align: right;
+  }
+
+  .meta-item {
+    margin: 3px 0;
+  }
+
+  .meta-label {
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .meta-val {
+    color: #0f172a;
+    font-weight: 700;
+  }
+
+  h1 {
+    font-size: 17pt;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.3;
+    margin: 16px 0 14px 0;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 12.5pt;
+    font-weight: 700;
+    color: #0f172a;
+    border-left: 4px solid #0284c7;
+    padding-left: 10px;
+    margin: 26px 0 10px 0;
+    line-height: 1.35;
+    break-after: avoid;
+    background: #f8fafc;
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+
+  h3 {
+    font-size: 10.5pt;
+    font-weight: 700;
+    color: #0369a1;
+    margin: 16px 0 6px 0;
+    line-height: 1.3;
+    break-after: avoid;
+  }
+
+  p {
+    margin: 0 0 10px 0;
+    text-align: justify;
+    text-justify: inter-word;
+  }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 22px 0;
+  }
+
+  /* Academic abstract card */
+  .abstract-card {
+    background: #f0fdf4;
+    border-left: 4px solid #16a34a;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 16px 0 20px 0;
+    font-size: 9.5pt;
+  }
+
+  /* Math Blocks */
+  .math-block {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin: 12px 0;
+    text-align: center;
+    font-family: "Cambria Math", "Latin Modern Math", Georgia, serif;
+    font-size: 10.5pt;
+    color: #0f172a;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+    break-inside: avoid;
+  }
+
+  .math-inline {
+    font-family: "Cambria Math", "Latin Modern Math", Georgia, serif;
+    font-size: 10pt;
+    color: #0f172a;
+    padding: 0 2px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 18px 0;
+    font-size: 8.8pt;
+    break-inside: avoid;
+  }
+
+  th {
+    background: #0f172a;
+    color: #ffffff;
+    font-weight: 700;
+    padding: 7px 10px;
+    text-align: left;
+    border: 1px solid #0f172a;
+  }
+
+  td {
+    padding: 6px 10px;
+    border: 1px solid #cbd5e1;
+    color: #1e293b;
+  }
+
+  tr:nth-child(even) {
+    background: #f8fafc;
+  }
+
+  tr:hover {
+    background: #f1f5f9;
+  }
+
+  /* Lists */
+  ul, ol {
+    margin: 6px 0 12px 0;
+    padding-left: 22px;
+  }
+
+  li {
+    margin-bottom: 4px;
+    text-align: justify;
+  }
+
+  .inline-code {
+    background: #f1f5f9;
+    color: #0f172a;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 8.8pt;
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 1px solid #e2e8f0;
+  }
+
+  /* Highlight callouts */
+  .callout-success {
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    padding: 10px 14px;
+    margin: 12px 0;
+    border-radius: 0 6px 6px 0;
+    font-size: 9.2pt;
+    break-inside: avoid;
+  }
+
+  .page-break {
+    break-before: page;
+  }
+</style>
+</head>
+<body>
+
+<div class="academic-header">
+  <div class="inst-name">Indian Institute of Information Technology Guwahati</div>
+  <div class="dept-name">Department of Computer Science & Engineering</div>
+  
+  <div class="meta-grid">
+    <div class="meta-col">
+      <div class="meta-item"><span class="meta-label">Course:</span> <span class="meta-val">CS306 — Machine Learning</span></div>
+      <div class="meta-item"><span class="meta-label">Instructor:</span> <span class="meta-val">Dr. Debashree Devi</span></div>
+      <div class="meta-item"><span class="meta-label">Academic Session:</span> <span class="meta-val">Autumn 2026</span></div>
+    </div>
+    <div class="meta-col right">
+      <div class="meta-item"><span class="meta-label">Student Name:</span> <span class="meta-val">Sayan Shit</span></div>
+      <div class="meta-item"><span class="meta-label">Roll Number:</span> <span class="meta-val">2401179</span></div>
+      <div class="meta-item"><span class="meta-label">Program:</span> <span class="meta-val">B. Tech. 3rd Year CSE</span></div>
+    </div>
+  </div>
+</div>
+
+<h1>DeltaCare: Transparent Health Insurance Premium Estimation using Regularized CART Decision Tree Regression</h1>
+
+<p><strong>Course</strong>: CS306: Machine Learning  
+<strong>Course Instructor</strong>: Dr. Debashree Devi  
+<strong>Student Name</strong>: Sayan Shit  
+<strong>Roll Number</strong>: 2401179  
+<strong>Academic Program</strong>: B. Tech. 3rd Year, Computer Science and Engineering (CSE)  
+<strong>Institution</strong>: Indian Institute of Information Technology Guwahati (IIIT Guwahati), Assam, India  
+<strong>Academic Session</strong>: 2026  
+<strong>Project Title</strong>: DeltaCare — Actuarial Risk Estimation & Counterfactual Lifestyle Analysis  
+<strong>Model Architecture</strong>: Classification and Regression Trees (CART — <code class='inline-code'>sklearn.tree.DecisionTreeRegressor</code>)  
+<strong>Submission Artifact</strong>: Comprehensive Project Report & Benchmark Audit</p>
+
+<hr class='section-divider'>
+
+<h2>Executive Abstract</h2>
+
+<p>Accurate, transparent actuarial pricing is a foundational challenge in computational healthcare economics. Traditional consumer health insurance quoting portals suffer from severe informational asymmetry, predatory personal data harvesting, and black-box underwriting algorithms. In this project, we design, implement, and rigorously evaluate <strong>DeltaCare</strong>, a machine learning system that provides instantaneous, statistically robust health insurance premium predictions while illuminating the financial impact of controllable lifestyle choices (e.g., smoking cessation and BMI management).</p>
+
+<p>Using the standard empirical US Medical Cost Personal Dataset (<span class='math-inline'>N = 1,338</span> records), we formulate the problem as a supervised continuous regression task. We conduct rigorous statistical dependency and correlation analyses, demonstrating that standard linear models (Ordinary Least Squares, Ridge Regression) suffer from structural underfitting (<span class='math-inline'><i>R</i><sup>2</sup> &asymp; 0.78</span>, <span class='math-inline'>MAE &asymp; \</span>4,181<span class='math-inline'>) due to a massive, non-linear interaction effect between <code class='inline-code'>bmi</code> and <code class='inline-code'>smoker</code>. To overcome these limitations without resorting to opaque, heavy native ensemble libraries (e.g., XGBoost), we deploy a regularized <strong>Classification and Regression Tree (CART)</strong> regressor utilizing an</span>L_1$ absolute error loss criterion (<code class='inline-code'>criterion="absolute_error"</code>), constrained tree depth (<code class='inline-code'>max_depth=6</code>), and an actuarial support floor (<code class='inline-code'>min_samples_leaf=10</code>).</p>
+
+<p>Our proposed architecture achieves a holdout Coefficient of Determination of <strong><span class='math-inline'><i>R</i><sup>2</sup> = 0.8692</span></strong> (exceeding the course benchmark gate of <span class='math-inline'>&ge; 0.85</span>) and a Mean Absolute Error of <strong><span class='math-inline'>MAE = \</span>1,749.60<span class='math-inline'></strong> (well below the</span>\le \$2,000.00 requirement), while reducing serialized artifact size by <span class='math-inline'>>95\%</span> (to <span class='math-inline'>11.0\text{ KB}</span>). Crucially, we introduce an automated domain monotonicity audit verifying $1,568 demographic permutations, proving that smoking status never spuriously decreases estimated charges (minimum smoker delta: <span class='math-inline'>+\</span>9,981.18<span class='math-inline'>). The trained pipeline is serialized into an atomic scikit-learn artifact ensuring zero train-serve skew, backed by statistical confidence bounds (</span>\pm \text{MAE}$) and an interactive counterfactual "What-If" engine.</p>
+
+<hr class='section-divider'>
+
+<h2>1. Problem Formulation & Task Definition</h2>
+
+<p>In accordance with Mitchell's classical machine learning paradigm, a computer program is said to learn from experience <span class='math-inline'>E</span> with respect to some class of tasks <span class='math-inline'>T</span> and performance measure <span class='math-inline'>P</span>, if its performance at tasks in <span class='math-inline'>T</span>, as measured by <span class='math-inline'>P</span>, improves with experience <span class='math-inline'>E</span>. We formally cast the DeltaCare learning problem as the 3-tuple <span class='math-inline'>\langle P, T, E \rangle</span>:</p>
+
+<p>``<code class='inline-code'>mermaid
+flowchart LR
+    E[Experience E\n1,338 Actuarial Records\nDemographics + Lifestyle] --> L[Learning Algorithm\nRegularized CART L1 Tree]
+    L --> T[Task T\nPredict Annual Charges y\nGiven x in R^d]
+    T --> P[Performance Measure P\nR^2 >= 0.85, MAE <= $2,000\nZero Monotonicity Defects]
+</code>`<code class='inline-code'></p>
+
+<h3>1.1 Task (<span class='math-inline'>T</span>)</h3>
+Predict the individualized annual medical expenditure <span class='math-inline'>y &isin; <b>R</b><sup>+</sup></span> billed to health insurance for a beneficiary, given an actuarial feature vector <span class='math-inline'><b>x</b> &isin; <i>X</i></span>:
+<div class='math-block'>y&#770; = h(<b>x</b>)</div>
+where the input vector <span class='math-inline'><b>x</b> = [x_1, x_2, \dots, x_6]^T</span> comprises:
+<ul>
+<li><span class='math-inline'>x_{\text{age}} &isin; [18, 64]</span>: Continuous age of the beneficiary.</li>
+<li><span class='math-inline'>x_{\text{sex}} &isin; \{\text{female}, \text{male}\}</span>: Biological sex.</li>
+<li><span class='math-inline'>x_{\text{bmi}} &isin; [15.0, 54.0]</span>: Body Mass Index (<span class='math-inline'>\text{kg}/\text{m}^2</span>).</li>
+<li><span class='math-inline'>x_{\text{children}} &isin; [0, 5]</span>: Number of dependent children covered by health insurance.</li>
+<li><span class='math-inline'>x_{\text{smoker}} &isin; \{\text{no}, \text{yes}\}</span>: Tobacco smoking status.</li>
+<li><span class='math-inline'>x_{\text{region}} &isin; \{\text{northeast}, \text{northwest}, \text{southeast}, \text{southwest}\}</span>: US geographical residential zone.</li>
+</ul>
+
+<h3>1.2 Performance Measure (<span class='math-inline'>P</span>)</h3>
+Model quality is evaluated across both statistical accuracy and domain integrity gates:
+<ol>
+<li class='ordered'><strong>Coefficient of Determination (<span class='math-inline'><i>R</i><sup>2</sup></span>)</strong>: Proportion of target variance explained by the hypothesis:</li>
+</ol>
+   <div class='math-block'>R^2 = 1 - \frac{SS_{\text{res}}}{SS_{\text{tot}}} = 1 - \frac{&sum;<sub>i=1..n</sub> (y_i - y&#770;<sub>i</sub>)^2}{&sum;<sub>i=1..n</sub> (y_i - y&#772;)^2} &ge; 0.85</div>
+<ol>
+<li class='ordered'><strong>Mean Absolute Error (<span class='math-inline'>MAE</span>)</strong>: Average magnitude of absolute residual errors:</li>
+</ol>
+   <div class='math-block'>\text{MAE} = \frac{1}{n}&sum;<sub>i=1..n</sub> |y_i - y&#770;<sub>i</sub>| &le; \$2,000.00</div>
+<ol>
+<li class='ordered'><strong>Root Mean Squared Error (<span class='math-inline'>RMSE</span>)</strong>: Quadratic metric penalizing extreme prediction errors:</li>
+</ol>
+   <div class='math-block'>\text{RMSE} = \sqrt{\frac{1}{n}&sum;<sub>i=1..n</sub> (y_i - y&#770;<sub>i</sub>)^2}</div>
+<ol>
+<li class='ordered'><strong>Domain Monotonicity Integrity</strong>: Zero pricing reversals across smoking status ceteris paribus:</li>
+</ol>
+   <div class='math-block'>&forall; <b>x</b>,  &nbsp;  h(<b>x</b> \mid \text{smoker}=\text{yes}) > h(<b>x</b> \mid \text{smoker}=\text{no})</div>
+
+<h3>1.3 Experience (<span class='math-inline'>E</span>)</h3>
+Supervised training dataset comprising <span class='math-inline'>N = 1,338</span> empirical records drawn from the US Medical Cost Personal Dataset, split into an <span class='math-inline'>80\%</span> training partition (<span class='math-inline'>N_{\text{train}} = 1,070</span>) and a <span class='math-inline'>20\%</span> holdout test partition (<span class='math-inline'>N_{\text{test}} = 268</span>) with a fixed pseudo-random seed ($42).
+
+<hr class='section-divider'>
+
+<h2>2. Statistical Dependency & Correlation Analysis</h2>
+
+<p>Prior to model selection, exploratory data analysis (EDA) and statistical dependency tests were conducted to uncover underlying distributions and interaction dynamics.</p>
+
+<h3>2.1 Sample Variance & Covariance Formulations</h3>
+For continuous features, sample variance <span class='math-inline'>s^2</span> is computed using <strong>Bessel's correction</strong> to ensure an unbiased estimator of the population variance <span class='math-inline'>&sigma;^2</span>:
+<div class='math-block'>s_x^2 = \frac{1}{N - 1}&sum;<sub>i=1..N</sub> (x_i - x&#772;)^2</div>
+
+<p>The sample covariance between feature <span class='math-inline'>X</span> and target <span class='math-inline'>Y</span> measures joint variability:
+<div class='math-block'>Cov(X, Y) = \frac{1}{N - 1}&sum;<sub>i=1..N</sub> (x_i - x&#772;)(y_i - y&#772;)</div></p>
+
+<h3>2.2 Pearson Correlation Matrix</h3>
+The linear dependency between normalized random variables is quantified via Pearson's correlation coefficient <span class='math-inline'>r_{xy} &isin; [-1, 1]</span>:
+<div class='math-block'>r_{xy} = \frac{Cov(X, Y)}{s_x s_y} = \frac{&sum;<sub>i=1..N</sub> (x_i - x&#772;)(y_i - y&#772;)}{\sqrt{&sum;<sub>i=1..N</sub> (x_i - x&#772;)^2 &sum;<sub>i=1..N</sub> (y_i - y&#772;)^2}}</div>
+
+<table><thead><tr><th>Feature (<span class='math-inline'>X</span>)</th><th>Target Covariance <span class='math-inline'>\text{Cov}(X, \text{charges})</span></th><th>Pearson Correlation (<span class='math-inline'>r</span>)</th><th>Statistical Interpretation</th></tr></thead><tbody><tr><td><strong></code>smoker<code class='inline-code'></strong> (binary encoded)</td><td><span class='math-inline'>+3.85 &times; 10^3</span></td><td><strong><span class='math-inline'>+0.7873</span></strong></td><td>Dominant driver; strong positive correlation with claims</td></tr><tr><td><strong></code>age<code class='inline-code'></strong></td><td><span class='math-inline'>+5.09 &times; 10^4</span></td><td><strong><span class='math-inline'>+0.2990</span></strong></td><td>Moderate positive linear drift (aging risk)</td></tr><tr><td><strong></code>bmi<code class='inline-code'></strong></td><td><span class='math-inline'>+1.46 &times; 10^4</span></td><td><strong><span class='math-inline'>+0.1983</span></strong></td><td>Weak global linear correlation (masked by interaction)</td></tr><tr><td><strong></code>children<code class='inline-code'></strong></td><td><span class='math-inline'>+9.93 &times; 10^2</span></td><td><span class='math-inline'>+0.0680</span></td><td>Negligible linear dependency</td></tr><tr><td><strong></code>sex<code class='inline-code'></strong></td><td><span class='math-inline'>+3.47 &times; 10^2</span></td><td><span class='math-inline'>+0.0573</span></td><td>Statistically insignificant linear effect</td></tr><tr><td><strong></code>region<code class='inline-code'></strong></td><td><span class='math-inline'>-8.31 &times; 10^1</span></td><td><span class='math-inline'>-0.0062</span></td><td>Minimal baseline linear regional variance</td></tr></tbody></table>
+
+<h3>2.3 The Non-Linear Interaction Effect: <span class='math-inline'>\text{BMI} &times; \text{Smoker}</span></h3>
+While Pearson's <span class='math-inline'>r</span> between </code>bmi<code class='inline-code'> and </code>charges<code class='inline-code'> appears weak globally (<span class='math-inline'>r = 0.198</span>), conditional subset analysis reveals a dramatic interaction:
+<ul>
+<li><strong>Non-Smokers</strong>: Charges increase gradually with BMI across a modest slope (<span class='math-inline'>&asymp; \</span>400$ per 5 BMI points).</li>
+<li><strong>Smokers with <span class='math-inline'>\text{BMI} < 30</span></strong>: Charges plateau in an elevated band (<span class='math-inline'>&asymp; \</span>15,000 - \$20,000).</li>
+<li><strong>Smokers with <span class='math-inline'>\text{BMI} &ge; 30</span> (Obese Smokers)</strong>: Charges exhibit a sudden, discontinuous surge exceeding <strong><span class='math-inline'>+\</span>34,000<span class='math-inline'></strong>, with medical charges clustering above</span>\$40,000.</li>
+</ul>
+
+<p>Linear models lack the mathematical capacity to model this threshold step without manual multiplicative feature creation.</p>
+
+<hr class='section-divider'>
+
+<h2>3. Theoretical Foundations & Baseline Benchmarks</h2>
+
+<h3>3.1 Multiple Linear Regression & Ordinary Least Squares (OLS)</h3>
+The classical supervised linear regression hypothesis is formulated in matrix notation as:
+<div class='math-block'><b>y</b> = <b>X</b><b>w</b> + <b>&epsilon;</b></div>
+where <span class='math-inline'><b>X</b> &isin; <b>R</b>^{n &times; (d+1)}</span> is the design matrix (including intercept column <span class='math-inline'>\mathbf{1}</span>), <span class='math-inline'><b>w</b> &isin; <b>R</b>^{d+1}</span> is the parameter vector, and <span class='math-inline'>\boldsymbol{&epsilon;} \sim \mathcal{N}(0, &sigma;^2 \mathbf{I})</span> represents unobserved i.i.d. Gaussian error residuals.
+
+<p>The Ordinary Least Squares objective minimizes the Sum of Squared Residuals (<span class='math-inline'>SS_{\text{res}}</span>):
+<div class='math-block'>J(<b>w</b>) = \|<b>y</b> - <b>X</b><b>w</b>\|_2^2 = (<b>y</b> - <b>X</b><b>w</b>)^T(<b>y</b> - <b>X</b><b>w</b>)</div></p>
+
+<p>Setting the gradient vector with respect to <span class='math-inline'><b>w</b></span> to zero yields the <strong>Normal Equation</strong>:
+<div class='math-block'>\nabla_{<b>w</b>} J(<b>w</b>) = -2<b>X</b>^T(<b>y</b> - <b>X</b><b>w</b>) = <b>0</b></div>
+<div class='math-block'><b>X</b>^T<b>X</b><b>w</b> = <b>X</b>^T<b>y</b> &rArr; <b>w</b><sup>*</sup> = (<b>X</b>^T<b>X</b>)^{-1}<b>X</b>^T<b>y</b></div></p>
+
+<h3>3.2 Regularized Ridge Regression (<span class='math-inline'><i>L</i><sub>2</sub></span> Penalty)</h3>
+To stabilize matrix inversion when multicollinearity exists, Ridge regression introduces an <span class='math-inline'><i>L</i><sub>2</sub></span> weight shrinkage penalty:
+<div class='math-block'>J_{\text{Ridge}}(<b>w</b>) = \|<b>y</b> - <b>X</b><b>w</b>\|_2^2 + &alpha; \|<b>w</b>\|_2^2 &rArr; <b>w</b><sup>*</sup>_{\text{Ridge}} = (<b>X</b>^T<b>X</b> + &alpha; <b>I</b>)^{-1}<b>X</b>^T<b>y</b></div>
+
+<h3>3.3 Why Linear Models Fail on Actuarial Medical Data</h3>
+When trained on the 80% partition of </code>insurance.csv<code class='inline-code'>:
+<ul>
+<li>OLS Linear Regression yields holdout <span class='math-inline'><i>R</i><sup>2</sup> = 0.7836</span> and <span class='math-inline'>MAE = \</span>4,181.19$.</li>
+<li>Ridge Regression (<span class='math-inline'>&alpha; = 1.0</span>) yields holdout <span class='math-inline'><i>R</i><sup>2</sup> = 0.7833</span> and <span class='math-inline'>MAE = \</span>4,193.20$.</li>
+</ul>
+
+<p>Both linear baselines severely fail the course quality benchmarks (<span class='math-inline'><i>R</i><sup>2</sup> < 0.85</span> and <span class='math-inline'>MAE > \</span>2,000<span class='math-inline'>). The failure stems from residual bias: linear hyperplanes cannot approximate step-function interactions (</span>\text{BMI} \ge 30 \times \text{smoker}$), resulting in large systematic residuals across obese smokers and healthy non-smokers alike.</p>
+
+<hr class='section-divider'>
+
+<h2>4. Data Preprocessing & Pipeline Architecture</h2>
+
+<p>To prevent <strong>Train-Serve Skew</strong> (discrepancies between training data transformations and real-time inference), all transformations are encapsulated within an atomic </code>scikit-learn.pipeline.Pipeline<code class='inline-code'>.</p>
+
+<p></code>`<code class='inline-code'>mermaid
+flowchart TD
+    subgraph RawInput [Raw Input DataFrame]
+        Age[age: int]
+        Bmi[bmi: float]
+        Children[children: int]
+        Sex[sex: str]
+        Smoker[smoker: str]
+        Region[region: str]
+    end</p>
+
+<p>subgraph ColumnTransformer [Atomic ColumnTransformer]
+        SS[StandardScaler\nZ-score: z = x - mu / sigma]
+        OHE[OneHotEncoder\ndrop=first, sparse=False]
+    end</p>
+
+<p>subgraph Estimator [Supervised Estimator]
+        CART[DecisionTreeRegressor\ncriterion=absolute_error\nmax_depth=6, min_samples_leaf=10]
+    end</p>
+
+<p>Age & Bmi & Children --> SS
+    Sex & Smoker & Region --> OHE
+    SS & OHE --> CART
+    CART --> Pred[Continuous Charge Prediction y]
+</code>`<code class='inline-code'></p>
+
+<h3>4.1 Feature Transformations</h3>
+<ol>
+<li class='ordered'><strong>Numerical Standardization</strong>:</li>
+</ol>
+   Continuous variables (<span class='math-inline'>x_{\text{age}}, x_{\text{bmi}}, x_{\text{children}}</span>) are standardized via sample mean <span class='math-inline'>&mu;</span> and standard deviation <span class='math-inline'>&sigma;</span>:
+   <div class='math-block'>z = \frac{x - &mu;}{&sigma;}</div>
+<ol>
+<li class='ordered'><strong>Categorical One-Hot Encoding</strong>:</li>
+</ol>
+   Nominal features are transformed into binary indicator columns. To avoid dummy variable multicollinearity in baseline linear comparisons, the first level is dropped (</code>drop="first"<code class='inline-code'>):
+<ul>
+<li></code>sex<code class='inline-code'>: <span class='math-inline'>&rarr; [\text{sex\_male}]</span></li>
+<li></code>smoker<code class='inline-code'>: <span class='math-inline'>&rarr; [\text{smoker\_yes}]</span></li>
+<li></code>region<code class='inline-code'>: <span class='math-inline'>&rarr; [\text{region\_northwest}, \text{region\_southeast}, \text{region\_southwest}]</span></li>
+</ul>
+
+<hr class='section-divider'>
+
+<h2>5. Proposed Methodology: Regularized CART Decision Tree Regressor</h2>
+
+<h3>5.1 Algorithmic Foundations of CART</h3>
+The Classification and Regression Trees (CART) algorithm, pioneered by Breiman et al. (1984), recursively partitions the feature space <span class='math-inline'><i>X</i></span> into <span class='math-inline'>M</span> disjoint hyper-rectangles <span class='math-inline'>\{R_1, R_2, \dots, R_M\}</span>. Within each terminal region <span class='math-inline'>R_m</span>, the hypothesis predicts a constant actuarial value <span class='math-inline'>\hat{c}_m</span>:
+<div class='math-block'>y&#770; = h(<b>x</b>) = &sum;<sub>m=1..M</sub> c&#770;<sub>m</sub> &sdot; \mathbb{I}(<b>x</b> &isin; R_m)</div>
+
+<p>At each node, CART performs a greedy search to determine the optimal split variable <span class='math-inline'>j</span> and split threshold <span class='math-inline'>s</span> dividing the data into half-planes <span class='math-inline'>R_1(j, s) = \{<b>x</b> \mid x_j &le; s\}</span> and <span class='math-inline'>R_2(j, s) = \{<b>x</b> \mid x_j > s\}</span>.</p>
+
+<h3>5.2 Splitting Criteria: <span class='math-inline'><i>L</i><sub>2</sub></span> (Mean) vs. <span class='math-inline'><i>L</i><sub>1</sub></span> (Median) Loss & Probabilistic Interpretation</h3>
+A critical algorithmic decision in regression trees is the choice of impurity criterion. This can be understood rigorously through Maximum Likelihood Estimation (MLE):
+<ol>
+<li class='ordered'><strong>Mean Squared Error (<span class='math-inline'><i>L</i><sub>2</sub></span> Loss — </code>criterion="squared_error"<code class='inline-code'>)</strong>:</li>
+</ol>
+   <div class='math-block'>Q_m(T) = \frac{1}{|R_m|}&sum;_{i &isin; R_m} (y_i - y&#772;_m)^2,  &nbsp;  \text{where } y&#772;_m = \frac{1}{|R_m|}&sum;_{i &isin; R_m} y_i</div>
+<ul>
+<li><strong>Probabilistic Origin</strong>: Minimizing <span class='math-inline'><i>L</i><sub>2</sub></span> loss is mathematically equivalent to Maximum Likelihood Estimation under the assumption of additive Gaussian noise: <span class='math-inline'>&epsilon;_i \sim \mathcal{N}(0, &sigma;^2)</span>. The negative log-likelihood is <span class='math-inline'>\mathcal{L}_{\text{NLL}} \propto \sum (y_i - y&#770;_i)^2</span>. Setting the derivative to zero yields the conditional sample mean <span class='math-inline'>y&#772;_m</span>.</li>
+<li><strong>Limitation on Healthcare Data</strong>: Medical claims distributions exhibit severe positive skew with heavy tails (e.g., catastrophic hospitalization events exceeding <span class='math-inline'>\</span>60,000$). Because errors are squared, extreme outliers dominate the loss gradient, pulling split thresholds and leaf predictions upward and artificially inflating quotes for healthy policyholders.</li>
+</ul>
+<ol>
+<li class='ordered'><strong>Mean Absolute Error (<span class='math-inline'><i>L</i><sub>1</sub></span> Loss — </code>criterion="absolute_error"<code class='inline-code'>)</strong>:</li>
+</ol>
+   <div class='math-block'>Q_m(T) = \frac{1}{|R_m|}&sum;_{i &isin; R_m} |y_i - c&#770;<sub>m</sub>|,  &nbsp;  \text{where } c&#770;<sub>m</sub> = median(\{y_i \mid <b>x</b>_i &isin; R_m\})</div>
+<ul>
+<li><strong>Probabilistic Origin</strong>: Minimizing <span class='math-inline'><i>L</i><sub>1</sub></span> loss corresponds directly to MLE under an additive Laplace (double-exponential) noise distribution: <span class='math-inline'>&epsilon;_i \sim \text{Laplace}(0, b)</span> with probability density function <span class='math-inline'>p(&epsilon;) = \frac{1}{2b}\exp&le;ft(-\frac{|&epsilon;|}{b}\right)</span>. The negative log-likelihood is <span class='math-inline'>\mathcal{L}_{\text{NLL}} \propto \sum |y_i - y&#770;_i|</span>. Differentiating with respect to <span class='math-inline'>\hat{c}_m</span> yields <span class='math-inline'>\sum \text{sgn}(y_i - \hat{c}_m) = 0</span>, whose solution is the conditional sample median.</li>
+<li><strong>Actuarial Advantage</strong>: The conditional median is highly resistant to outlier contamination. In DeltaCare, <span class='math-inline'><i>L</i><sub>1</sub></span> optimization guarantees that catastrophic claims do not distort standard plan estimates, achieving an audited holdout MAE of <span class='math-inline'>\</span>1,749.60$.</li>
+</ul>
+
+<h3>5.3 Regularization Hyperparameters</h3>
+Unconstrained decision trees grow until every leaf is pure, memorizing noise and training samples. To regularize the hypothesis, we enforce:
+<ul>
+<li><strong></code>max_depth = 6<code class='inline-code'></strong>: Constrains the maximum tree depth to 6 levels (<span class='math-inline'>M &le; 2^6 = 64</span> leaves), preventing complex, high-variance decision surfaces.</li>
+<li><strong></code>min_samples_leaf = 10<code class='inline-code'></strong>: Guarantees that every leaf contains at least 10 historical training instances, ensuring statistical validity and eliminating spurious split anomalies.</li>
+<li><strong></code>random_state = 42<code class='inline-code'></strong>: Ensures 100% deterministic reproducibility.</li>
+</ul>
+
+<hr class='section-divider'>
+
+<h2>6. Experimental Results & Comparative Analysis</h2>
+
+<p>All models were evaluated on the identical 80/20 train/test holdout split (<span class='math-inline'>N_{\text{train}} = 1,070, N_{\text{test}} = 268</span>).</p>
+
+<h3>6.1 Quantitative Performance Comparison</h3>
+
+<table><thead><tr><th>Model Architecture</th><th>Train <span class='math-inline'><i>R</i><sup>2</sup></span></th><th>Holdout Test <span class='math-inline'><i>R</i><sup>2</sup></span></th><th>Test MAE (<span class='math-inline'>)</th><th>Test RMSE (</span>)</th><th>Quality Gate Status</th></tr></thead><tbody><tr><td><strong>Multiple Linear Regression (OLS)</strong></td><td>$0.7417</td><td>$0.7836</td><td><span class='math-inline'>\</span>4,181.19<span class='math-inline'></td><td></span>\$5,796.28</td><td>❌ Failed (<span class='math-inline'><i>R</i><sup>2</sup> < 0.85</span>, <span class='math-inline'>MAE > \</span>2,000$)</td></tr><tr><td><strong>Ridge Regression (<span class='math-inline'>&alpha;=1.0</span>)</strong></td><td>$0.7417</td><td>$0.7833</td><td><span class='math-inline'>\</span>4,193.20<span class='math-inline'></td><td></span>\$5,800.46</td><td>❌ Failed (<span class='math-inline'><i>R</i><sup>2</sup> < 0.85</span>, <span class='math-inline'>MAE > \</span>2,000$)</td></tr><tr><td><strong>Polynomial Regression (Degree 2 + Ridge)</strong></td><td>$0.8401</td><td>$0.8656</td><td><span class='math-inline'>\</span>2,836.88<span class='math-inline'></td><td></span>\$4,568.56</td><td>❌ Failed (<span class='math-inline'>MAE > \</span>2,000$)</td></tr><tr><td><strong>Unconstrained Decision Tree (</code>max_depth=None<code class='inline-code'>)</strong></td><td>$0.9983</td><td>$0.7074</td><td><span class='math-inline'>\</span>3,303.52<span class='math-inline'></td><td></span>\$6,739.81</td><td>❌ Overfit (<span class='math-inline'><i>R</i><sup>2</sup></span> drops 29% on test)</td></tr><tr><td><strong>Proposed Tuned CART (<span class='math-inline'><i>L</i><sub>1</sub></span>, Depth=6, Leaf=10)</strong></td><td><strong>$0.8550</strong></td><td><strong>$0.8692</strong></td><td><strong><span class='math-inline'>\</span>1,749.60<span class='math-inline'></strong></td><td><strong></span>\$4,507.11</strong></td><td><strong>PASSED ALL GATES</strong></td></tr></tbody></table>
+
+<p></code>`<code class='inline-code'>mermaid
+xychart-beta
+    title "Model Test MAE Comparison (Lower is Better)"
+    x-axis ["OLS Linear", "Ridge Reg", "Poly Deg-2", "Unconstrained Tree", "Tuned CART (DeltaCare)"]
+    y-axis "MAE in USD ($)" 0 --> 5000
+    bar [4181.19, 4193.20, 2836.88, 3303.52, 1749.60]
+</code>`<code class='inline-code'></p>
+
+<h3>6.2 Analysis of Results</h3>
+<ol>
+<li class='ordered'><strong>Bias-Variance Dynamics</strong>: The unconstrained decision tree exhibits classic high variance (<span class='math-inline'><i>R</i><sup>2</sup>_{\text{train}} = 0.9983</span> vs. <span class='math-inline'><i>R</i><sup>2</sup>_{\text{test}} = 0.7074</span>). Enforcing </code>max_depth=6<code class='inline-code'> and </code>min_samples_leaf=10<code class='inline-code'> regularizes the tree, closing the generalization gap (<span class='math-inline'><i>R</i><sup>2</sup>_{\text{train}} = 0.8550</span> vs. <span class='math-inline'><i>R</i><sup>2</sup>_{\text{test}} = 0.8692</span>).</li>
+<li class='ordered'><strong>Superior Accuracy</strong>: DeltaCare's regularized CART reduces holdout MAE by <strong><span class='math-inline'>58.1\%</span></strong> compared to Linear Regression (<span class='math-inline'>\</span>1,749.60<span class='math-inline'>vs.</span>\$4,181.19).</li>
+<li class='ordered'><strong>Artifact Efficiency</strong>: The final serialized pipeline artifact is only <strong><span class='math-inline'>11.0\text{ KB}</span></strong> with deserialization latency of <span class='math-inline'>&asymp; 100\text{ms}</span>, operating with zero native external compilation toolchains.</li>
+</ol>
+
+<hr class='section-divider'>
+
+<h2>7. Residual Analysis & Goodness of Fit</h2>
+
+<h3>7.1 Residual Formulation</h3>
+The prediction residual <span class='math-inline'>&epsilon;_i</span> for sample <span class='math-inline'>i</span> is defined as:
+<div class='math-block'>&epsilon;<sub>i</sub> = y_i - y&#770;<sub>i</sub></div>
+
+<p>The total variance decomposition verifies the conservation of sums of squares:
+<div class='math-block'>SS_{\text{tot}} = SS_{\text{reg}} + SS_{\text{res}}</div>
+<div class='math-block'>&sum;<sub>i=1..n</sub> (y_i - y&#772;)^2 = &sum;<sub>i=1..n</sub> (y&#770;<sub>i</sub> - y&#772;)^2 + &sum;<sub>i=1..n</sub> (y_i - y&#770;<sub>i</sub>)^2</div></p>
+
+<h3>7.2 Residual Distribution Findings</h3>
+<ul>
+<li><strong>Symmetric Error Band</strong>: For medical claims below <span class='math-inline'>\</span>30,000<span class='math-inline'>, residual errors are tightly clustered around zero within the</span>\pm \$1,749.60 MAE band.</li>
+<li><strong>Outlier Claims</strong>: Residual errors for extreme catastrophic surgical claims (<span class='math-inline'>y_i > \</span>50,000<span class='math-inline'>) do not skew the baseline premiums of lower-risk policyholders, directly validating our choice of</span>L_1<span class='math-inline'>loss over</span>L_2$ loss.</li>
+</ul>
+
+<hr class='section-divider'>
+
+<h2>8. Domain Auditing & Monotonicity Verification</h2>
+
+<p>In production actuarial applications, statistical metrics alone are insufficient; the model must satisfy rigorous economic domain constraints.</p>
+
+<h3>8.1 The Non-Linear Interaction Surge Gate</h3>
+To satisfy Functional Requirement FR-002, the model must verify that an increase in BMI from normal to obese (<span class='math-inline'>\text{BMI} = 35</span>) generates a massive premium surge for smokers.
+<ul>
+<li>Non-smoker 45yo, BMI 35: <span class='math-inline'>\</span>10,214.62$</li>
+<li>Smoker 45yo, BMI 35: <span class='math-inline'>\</span>44,687.80$</li>
+<li><strong>Smoker Price Surge</strong>: <strong><span class='math-inline'>+\</span>34,473.18<span class='math-inline'></strong> (Exceeds the</span>\ge \$10,000 requirement).</li>
+</ul>
+
+<h3>8.2 Discovery & Resolution of the Monotonicity Defect</h3>
+During pull request automated review (PR #23), an actuarial edge-case was flagged: with </code>min_samples_leaf=5<code class='inline-code'>, an under-regularized leaf split caused a 20-year-old Northwest male with BMI 24 and 2 children to be priced <em>higher</em> after quitting smoking (<span class='math-inline'>\text{Smoker}=\</span>16,450.89<span class='math-inline'>,</span>\text{Non-Smoker}=\$18,838.70, Delta <span class='math-inline'>= -\</span>2,387.81$).
+
+<p><strong>Root Cause</strong>: With a leaf support floor of only 5 samples, an atypical cluster of hospitalized young non-smokers in the Northwest formed an isolated high-cost leaf node.</p>
+
+<p><strong>Resolution & Empirical Audit</strong>:
+Increasing </code>min_samples_leaf=10<code class='inline-code'> eliminated spurious leaf partitions. We authored an exhaustive automated audit in </code>scripts/audit_model.py<code class='inline-code'> evaluating <strong>1,568 demographic combinations</strong>:
+<ul>
+<li>Ages: <span class='math-inline'>[19, 20, 25, 30, 40, 50, 60]</span></li>
+<li>BMIs: <span class='math-inline'>[18.5, 22.0, 24.0, 28.0, 30.0, 35.0, 40.0]</span></li>
+<li>Dependents: <span class='math-inline'>[0, 1, 2, 3]</span></li>
+<li>Sexes: <span class='math-inline'>[\text{male}, \text{female}]</span></li>
+<li>Regions: <span class='math-inline'>[\text{northeast}, \text{northwest}, \text{southeast}, \text{southwest}]</span></li>
+</ul></p>
+
+<p><strong>Audit Results</strong>:
+<ul>
+<li><strong>Monotonicity Violations</strong>: <strong>$0 defects across all 1,568 profile pairs</strong>.</li>
+<li><strong>Minimum Smoker Premium Delta</strong>: <strong><span class='math-inline'>+\</span>9,981.18$</strong> (Smoking is strictly penalized across every demographic).</li>
+<li><strong>Target Profile Check (20yo Northwest Male, BMI 24, 2 Dependents)</strong>:</li>
+<li>Smoker Quote: <span class='math-inline'>\</span>17,178.68$</li>
+<li>Non-Smoker Quote: <span class='math-inline'>\</span>3,443.06$</li>
+<li>Quitting Savings: <strong><span class='math-inline'>+\</span>13,735.62/\text{year}<span class='math-inline'></strong> (</span>+\<span class='math-inline'>1,144.63/\text{month}</span>).</li>
+</ul></p>
+
+<hr class='section-divider'>
+
+<h2>9. Real-Time Inference, Uncertainty Bounds & Guardrails</h2>
+
+<h3>9.1 Mathematical Clamping Floor</h3>
+Raw regression outputs on extreme edge cases can mathematically yield unrealistic or negative values. DeltaCare enforces an actuarial minimum floor in the inference pipeline:
+<div class='math-block'>Premium_{annual} = \max(\$1,000.00, \, y&#770;)</div>
+<div class='math-block'>Premium_{monthly} = \frac{Premium_{annual}}{12}</div>
+
+<h3>9.2 Statistical Confidence Bounds</h3>
+Traditional quotes provide deceptive single-point estimates. DeltaCare bounds every prediction with the holdout validation Mean Absolute Error (<span class='math-inline'>MAE = \</span>1,749.60$):
+<div class='math-block'>\text{Confidence Interval} = &le;ft[\max&le;ft(1000.0, \, y&#770; - \text{MAE}\right), \; y&#770; + \text{MAE}\right]</div>
+<div class='math-block'>\text{Monthly Interval} = &le;ft[\frac{\text{CI}_{\text{lower}}}{12}, \; \frac{\text{CI}_{\text{upper}}}{12}\right]</div>
+
+<h3>9.3 Counterfactual What-If Analysis</h3>
+For individuals with </code>smoker = "yes"<code class='inline-code'>, DeltaCare computes an on-the-fly counterfactual prediction <span class='math-inline'>y&#770;_{\text{cf}} = h(<b>x</b> \mid \text{smoker}=\text{no})</span>, rendering an instant quantifiable incentive:
+<div class='math-block'>&Delta;_{savings} = \max&le;ft(0, \, y&#770;_{\text{smoker}} - y&#770;_{\text{non-smoker}}\right)</div>
+
+<hr class='section-divider'>
+
+<h2>10. Conclusion & Key Takeaways</h2>
+<ol>
+<li class='ordered'><strong>Model Parsimony</strong>: A properly regularized single CART decision tree with <span class='math-inline'><i>L</i><sub>1</sub></span> loss achieved holdout <span class='math-inline'><i>R</i><sup>2</sup> = 0.8692</span> and <span class='math-inline'>MAE = \</span>1,749.60$, outperforming complex linear and polynomial baselines while remaining completely interpretable.</li>
+<li class='ordered'><strong>Dependency & Latency Optimization</strong>: Eliminating heavy gradient boosting frameworks (XGBoost) eradicated native C++ binary dependencies (</code>libgomp<code class='inline-code'>), shrunk the model artifact from <span class='math-inline'>220\text{ KB}</span> to <span class='math-inline'>11.0\text{ KB}</span> (<span class='math-inline'>>95\%</span> reduction), and enabled sub-millisecond execution.</li>
+<li class='ordered'><strong>Auditing Beyond Metrics</strong>: Standard test-set metrics can conceal serious economic bugs (such as non-monotonic pricing reversals). Exhaustive domain assertion testing is essential for high-stakes healthcare and financial machine learning systems.</li>
+</ol>
+
+<hr class='section-divider'>
+
+<h2>11. Project Code Traceability Matrix</h2>
+
+<table><thead><tr><th>File Path</th><th>Description & Academic Relevance</th></tr></thead><tbody><tr><td>[</code>train_model.py<code class='inline-code'>](file:///E:/DeltaCare/submission/train_model.py)</td><td>Complete data ingestion, ColumnTransformer preprocessing, regularized CART training, and serialization.</td></tr><tr><td>[</code>audit_model.py<code class='inline-code'>](file:///E:/DeltaCare/submission/audit_model.py)</td><td>Automated model quality gate, latency benchmark, non-linear interaction verification, and 1,568-pair monotonicity audit.</td></tr><tr><td>[</code>predict.py<code class='inline-code'>](file:///E:/DeltaCare/submission/predict.py)</td><td>Stateless inference engine with confidence interval brackets (<span class='math-inline'>&plusmn; MAE</span>) and counterfactual What-If savings calculation.</td></tr><tr><td>[</code>insurance.csv<code class='inline-code'>](file:///E:/DeltaCare/submission/insurance.csv)</td><td>US Medical Cost Personal Dataset (<span class='math-inline'>N = 1,338</span> records).</td></tr><tr><td>[</code>requirements.txt<code class='inline-code'>](file:///E:/DeltaCare/submission/requirements.txt)</td><td>Pure Python dependencies (</code>numpy<code class='inline-code'>, </code>pandas<code class='inline-code'>, </code>scikit-learn<code class='inline-code'>, </code>joblib<code class='inline-code'>).</td></tr><tr><td>[</code>ADR-011`](file:///E:/DeltaCare/docs/decisions/011-decision-tree-cart-regression.md)</td><td>Architectural Decision Record documenting the selection, math, and consequences of CART.</td></tr></tbody></table>
+
+</body>
+</html>
